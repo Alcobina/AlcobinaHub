@@ -1,5034 +1,1984 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <base target="_top">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --primary-color: #667eea;
-      --border-color: #e5e7eb;
-      --text-gray: #6b7280;
-      --bg-gray: #f9fafb;
-      --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 15px rgba(102, 126, 234, 0.2);
-      --shadow-lg: 0 20px 60px rgba(102, 126, 234, 0.3);
-      --radius: 6px;
-      --radius-lg: 10px;
-      --transition: all 0.3s ease;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #fff;
-      overflow-x: hidden;
-    }
-
-    /* Login Page Styles */
-    .login-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--primary-gradient);
-      padding: 20px;
-    }
-
-    .login-card {
-      background: white;
-      border-radius: 20px;
-      padding: 50px 40px;
-      box-shadow: var(--shadow-lg);
-      max-width: 450px;
-      width: 100%;
-      animation: fadeInUp 0.5s ease;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .login-header h1 {
-      font-size: 36px;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 10px;
-    }
-
-    .login-header p {
-      color: var(--text-gray);
-      font-size: 16px;
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: 500;
-      color: #374151;
-      font-size: 14px;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius);
-      font-size: 15px;
-      transition: var(--transition);
-      font-family: inherit;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary-gradient);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    .error-message {
-      background-color: #fee2e2;
-      color: #991b1b;
-      padding: 12px;
-      border-radius: var(--radius);
-      margin-bottom: 20px;
-      font-size: 14px;
-      display: none;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .error-message.show {
-      display: flex;
-    }
-
-    /* App Container */
-    .app-container {
-      display: flex;
-      height: 100vh;
-      background: #fff;
-    }
-
-    #sidebar {
-      width: 260px;
-      background: var(--primary-gradient);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      transition: var(--transition);
-      position: relative;
-      z-index: 100;
-    }
-
-    .sidebar-header {
-      padding: 25px;
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .menu-items {
-      flex: 1;
-      padding: 20px 0;
-      overflow-y: auto;
-    }
-
-    .menu-item {
-      padding: 16px 30px;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 15px;
-      color: rgba(255,255,255,0.9);
-      position: relative;
-    }
-
-    .menu-item i {
-      font-size: 18px;
-      min-width: 20px;
-    }
-
-    .menu-item:hover, .menu-item.active {
-      background: rgba(255,255,255,0.15);
-      color: white;
-    }
-
-    .menu-item.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: white;
-    }
-
-    .sidebar-footer {
-      padding: 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .logout-btn {
-      width: 100%;
-      padding: 12px;
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: var(--transition);
-    }
-    /* Collapsible Sidebar Styles */
-    #sidebar {
-      width: 260px;
-      background: var(--primary-gradient);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      transition: width 0.3s ease, padding 0.3s ease;
-      position: relative;
-      z-index: 100;
-    }
-    
-    #sidebar.collapsed {
-      width: 70px;
-    }
-    
-    #sidebar.collapsed .menu-item span,
-    #sidebar.collapsed .sidebar-header span,
-    #sidebar.collapsed .powered-by {
-      opacity: 0;
-      width: 0;
-      overflow: hidden;
-      transition: opacity 0.2s ease;
-    }
-    
-    #sidebar.collapsed .logout-btn span {
-      display: none;
-    }
-    
-    #sidebar.collapsed .menu-item {
-      justify-content: center;
-      padding: 16px 10px;
-    }
-    
-    #sidebar.collapsed .sidebar-header {
-      padding: 25px 10px;
-      justify-content: center;
-    }
-    
-    .menu-item span {
-      transition: opacity 0.3s ease;
-      white-space: nowrap;
-    }
-    
-    .hamburger-toggle {
-      position: absolute;
-      top: 20px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 20px;
-      z-index: 101;
-      color: white;
-      transition: transform 0.3s ease;
-    }
-    
-    #sidebar.collapsed .hamburger-toggle {
-      right: auto;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .logout-btn:hover {
-      background: rgba(255,255,255,0.3);
-    }
-
-    .powered-by {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.7);
-    }
-
-    #main-content {
-      flex: 1;
-      overflow-y: auto;
-      background: #f5f5f7;
-    }
-
-    /* Welcome Section */
-    .welcome-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .welcome-card {
-      background: white;
-      border-radius: 20px;
-      padding: 60px 40px;
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      max-width: 600px;
-      animation: fadeInUp 0.5s ease;
-    }
-
-    .welcome-card h1 {
-      font-size: 48px;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-    }
-
-    .welcome-card .username {
-      font-size: 24px;
-      color: #374151;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-
-    .welcome-card p {
-      color: var(--text-gray);
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    .welcome-card strong {
-      color: var(--primary-color);
-    }
-
-    /* Data Sections */
-    .data-section {
-      display: none;
-      padding: 30px;
-      animation: fadeInUp 0.5s ease;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .section-header h2 {
-      font-size: 28px;
-      color: #374151;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-header h2 i {
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .section-header .btn-primary {
-      width: auto;
-      padding: 12px 24px;
-      font-size: 15px;
-    }
-
-    .search-box {
-      margin-bottom: 25px;
-    }
-
-    .search-box input {
-      width: 100%;
-      max-width: 400px;
-      padding: 12px 20px;
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      font-size: 15px;
-      transition: var(--transition);
-    }
-
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-
-    /* TABLE STYLES (for Customers and Inventory) */
-
-
-    .data-table-container {
-      background: white;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    .data-table thead {
-      background: linear-gradient(135deg, #4a90e2 0%, #764ba2 100%);
-    }
-
-    .data-table thead th {
-      padding: 16px;
-      text-align: left;
-      font-weight: 600;
-      color: white;
-      text-transform: uppercase;
-      font-size: 13px;
-      letter-spacing: 0.5px;
-    }
-
-    .data-table tbody tr {
-      border-bottom: 1px solid var(--border-color);
-      transition: background-color 0.2s ease;
-    }
-
-    .data-table tbody tr:hover {
-      background-color: #f9fafb;
-    }
-
-    .data-table tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    .data-table tbody td {
-      padding: 14px 16px;
-      color: #374151;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .badge-primary {
-      background: #667eea;
-      color: white;
-    }
-
-    .badge-success {
-      background: #10b981;
-      color: white;
-    }
-
-    .badge-info {
-      background: #3b82f6;
-      color: white;
-    }
-
-    .badge-warning {
-      background: #f59e0b;
-      color: white;
-    }
-
-    .badge-secondary {
-      background: #e0e7ff;
-      color: #667eea;
-    }
-
-    .btn-edit-table {
-      background: #14b8a6;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition);
-    }
-
-    .btn-edit-table:hover {
-      background: #0d9488;
-      transform: translateY(-1px);
-    }
-
-    .btn-delete-table {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition);
-      margin-left: 8px;
-    }
-
-    .btn-delete-table:hover {
-      background: #dc2626;
-      transform: translateY(-1px);
-    }
-
-    .table-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-      background: white;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .empty-state i {
-      font-size: 80px;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-    }
-
-    .empty-state h3 {
-      font-size: 24px;
-      color: #374151;
-      margin-bottom: 10px;
-    }
-
-    .empty-state p {
-      color: var(--text-gray);
-      font-size: 16px;
-      margin-bottom: 30px;
-    }
-
-    /* PRICE LIST CARDS */
-    .data-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
-
-    .data-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: 25px;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-      border: 1px solid var(--border-color);
-    }
-
-    .data-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .data-card h3 {
-      font-size: 18px;
-      color: #374151;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--bg-gray);
-    }
-
-    .data-card h3 i {
-      color: var(--primary-color);
-    }
-
-    .data-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--bg-gray);
-    }
-
-    .data-row:last-of-type {
-      border-bottom: none;
-    }
-
-    .data-label {
-      color: var(--text-gray);
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .data-value {
-      color: #374151;
-      font-size: 14px;
-      text-align: right;
-      max-width: 60%;
-      word-wrap: break-word;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 2px solid var(--bg-gray);
-    }
-
-    .btn-edit, .btn-delete {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-edit {
-      background: #667eea;
-      color: white;
-    }
-
-    .btn-edit:hover {
-      background: #5568d3;
-      transform: translateY(-2px);
-    }
-
-    .btn-delete {
-      background: #ef4444;
-      color: white;
-    }
-
-    .btn-delete:hover {
-      background: #dc2626;
-      transform: translateY(-2px);
-    }
-
-    /* Modals */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: var(--radius-lg);
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-lg);
-      animation: slideUp 0.3s ease;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-header {
-      padding: 25px 30px;
-      border-bottom: 2px solid var(--bg-gray);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--primary-gradient);
-      color: white;
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }
-
-    .modal-header h2 {
-      font-size: 22px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0;
-      color: white;
-    }
-
-    .modal-close {
-      background: rgba(255,255,255,0.2);
-      border: none;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-
-    .modal-close:hover {
-      background: rgba(255,255,255,0.3);
-      transform: rotate(90deg);
-    }
-
-    .modal-body {
-      padding: 30px;
-    }
-
-    /* Margin Editable */
-    .editable-margin {
-      background: #fef3c7;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .editable-margin:hover {
-      background: #fde68a;
-    }
-
-    /* Mode Selection Buttons */
-    .btn-mode {
-      flex: 1;
-      padding: 12px 20px;
-      border: 2px solid var(--border-color);
-      background: white;
-      color: #374151;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-mode:hover {
-      border-color: var(--primary-color);
-      background: #f0f4ff;
-    }
-
-    .btn-mode.active {
-      background: var(--primary-gradient);
-      color: white;
-      border-color: var(--primary-color);
-    }
-
-    /* Search Results */
-    .search-result-item {
-      padding: 12px;
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .search-result-item:last-child {
-      border-bottom: none;
-    }
-
-    .search-result-item:hover {
-      background: #f9fafb;
-    }
-
-    .search-result-item strong {
-      color: #374151;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .search-result-item small {
-      color: var(--text-gray);
-      font-size: 12px;
-    }
-
-    .readonly-field {
-      background-color: #f3f4f6;
-      cursor: not-allowed;
-    }
-
-    /* Mobile Styles */
-    #mobile-toggle-btn {
-      display: none;
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 101;
-      background: var(--primary-gradient);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
-      cursor: pointer;
-      box-shadow: var(--shadow-md);
-    }
-
-    @media (max-width: 768px) {
-      #mobile-toggle-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      #sidebar {
-        position: fixed;
-        left: -260px;
-        top: 0;
-        height: 100vh;
-        z-index: 102;
-      }
-
-      #sidebar.show {
-        left: 0;
-      }
-
-      #main-content {
-        margin-left: 0;
-      }
-
-      .data-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .section-header .btn-primary {
-        width: 100%;
-      }
-
-      .data-table-container {
-        overflow-x: auto;
-      }
-
-      .data-table {
-        min-width: 1000px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlcoBina | Pings Promotion System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────── */
+:root{
+  --navy:#0B1E45;--navy2:#122259;--blue:#1A4FA0;--blue2:#2563C7;
+  --orange:#E8760A;--orange2:#FF8C1A;--amber:#FFC107;
+  --green:#0A7A45;--green-lt:#D4F5E4;
+  --red:#C0241E;--red-lt:#FCE8E7;
+  --sky:#EBF2FF;--sky2:#C8DCFF;
+  --gray0:#F8F9FC;--gray1:#EEF1F8;--gray2:#D8DDEF;
+  --gray3:#9AA3BB;--gray4:#5A6380;--gray5:#2C3350;
+  --white:#FFFFFF;
+  --font-head:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --shadow-sm:0 1px 4px rgba(11,30,69,.08);
+  --shadow-md:0 4px 18px rgba(11,30,69,.12);
+  --shadow-lg:0 12px 40px rgba(11,30,69,.18);
+  --radius:12px;--radius-sm:8px;
+  --transition:.18s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--gray0);color:var(--gray5);font-size:15px;line-height:1.55}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--gray1)}
+::-webkit-scrollbar-thumb{background:var(--gray2);border-radius:3px}
+
+/* ── APP SHELL ── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;background:var(--navy);display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform var(--transition)}
+.sidebar-logo{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--orange);border-radius:9px;
+  display:grid;place-items:center;font-family:var(--font-head);font-size:14px;font-weight:800;color:#fff}
+.logo-txt{font-family:var(--font-head);font-size:15px;font-weight:700;color:#fff;line-height:1.2}
+.logo-txt small{display:block;font-size:10px;font-weight:400;color:rgba(255,255,255,.45);
+  letter-spacing:.8px;text-transform:uppercase;font-family:var(--font-body);margin-top:1px}
+.sidebar-nav{padding:16px 12px;flex:1;overflow-y:auto}
+.nav-group{margin-bottom:20px}
+.nav-group-label{font-size:9.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.35);padding:0 8px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;
+  border-radius:var(--radius-sm);cursor:pointer;color:rgba(255,255,255,.6);
+  font-size:13.5px;font-weight:500;transition:all var(--transition);margin-bottom:2px}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:rgba(232,118,10,.18);color:var(--orange2);border:1px solid rgba(232,118,10,.25)}
+.nav-item .ni{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--orange);color:#fff;
+  font-size:10px;font-weight:700;border-radius:100px;padding:1px 7px;font-family:var(--font-mono)}
+
+.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.08)}
+.sf-time{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.35);text-align:center}
+.sf-time #live-clock{color:var(--orange2)}
+
+/* ── MAIN CONTENT ── */
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--gray2);padding:14px 28px;
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm)}
+.topbar-title{font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--navy)}
+.topbar-title span{color:var(--orange)}
+.topbar-meta{display:flex;align-items:center;gap:14px}
+.tb-tag{background:var(--sky);color:var(--blue2);font-size:11.5px;font-weight:600;
+  border-radius:100px;padding:4px 12px;letter-spacing:.3px}
+.tb-tag.orange{background:#FFF3E0;color:var(--orange)}
+.topbar-actions{display:flex;gap:8px}
+
+/* ── PAGE VIEWS ── */
+.page{display:none;padding:28px;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── FORM PAGE ── */
+.form-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,#1A3A7A 100%);
+  border-radius:var(--radius);padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden}
+.form-header::before{content:'';position:absolute;right:-40px;top:-40px;
+  width:200px;height:200px;border-radius:50%;background:rgba(232,118,10,.12)}
+.form-header::after{content:'';position:absolute;right:60px;bottom:-60px;
+  width:140px;height:140px;border-radius:50%;background:rgba(37,99,199,.2)}
+.fh-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
+.fh-brand{display:flex;align-items:center;gap:12px}
+.fh-icon{width:48px;height:48px;background:var(--orange);border-radius:12px;
+  display:grid;place-items:center;font-family:var(--font-head);font-size:18px;font-weight:800;color:#fff;
+  box-shadow:0 4px 16px rgba(232,118,10,.4)}
+.fh-txt h2{font-family:var(--font-head);font-size:20px;font-weight:700;color:#fff}
+.fh-txt p{font-size:12px;color:rgba(255,255,255,.55);margin-top:2px}
+.fh-ts{text-align:right;position:relative;z-index:1}
+.fh-ts .ts-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:4px}
+.fh-ts .ts-val{font-family:var(--font-mono);font-size:12px;color:var(--orange2);font-weight:500}
+.fh-ts .ts-uid{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.35);margin-top:2px}
+
+/* ── SECTION CARDS ── */
+.form-section{background:#fff;border-radius:var(--radius);margin-bottom:18px;
+  box-shadow:var(--shadow-sm);overflow:hidden;border:1px solid var(--gray2)}
+.fs-head{display:flex;align-items:center;gap:12px;padding:16px 22px;
+  border-bottom:1px solid var(--gray1);background:var(--gray0)}
+.fs-num{width:28px;height:28px;background:var(--navy);color:#fff;border-radius:50%;
+  display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:var(--font-mono)}
+.fs-title{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--navy)}
+.fs-desc{font-size:12px;color:var(--gray3);margin-top:1px}
+.fs-icon{margin-left:auto;font-size:20px}
+.fs-body{padding:20px 22px}
+
+/* ── FORM GRID ── */
+.fg{display:grid;gap:14px}
+.fg-2{grid-template-columns:repeat(2,1fr)}
+.fg-3{grid-template-columns:repeat(3,1fr)}
+.fg-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.fg-4,.fg-3{grid-template-columns:repeat(2,1fr)}.fg-2{grid-template-columns:1fr}}
+
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:var(--gray4);letter-spacing:.3px;text-transform:uppercase}
+.field input,.field select,.field textarea{
+  border:1.5px solid var(--gray2);border-radius:var(--radius-sm);
+  padding:9px 13px;font-family:var(--font-body);font-size:14px;color:var(--gray5);
+  background:#fff;transition:border-color var(--transition),box-shadow var(--transition);outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,199,.1)}
+.field textarea{resize:vertical;min-height:80px}
+.field-hint{font-size:11px;color:var(--gray3);margin-top:2px}
+.field-required::after{content:' *';color:var(--red)}
+.field input[readonly]{background:var(--gray0);color:var(--gray3);cursor:default}
+
+/* ── SKU TABLE ── */
+.sku-table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--gray2)}
+table.sku-table{width:100%;border-collapse:collapse;min-width:900px;font-size:13px}
+table.sku-table th{background:var(--navy);color:#fff;padding:10px 12px;
+  font-weight:600;font-size:11px;letter-spacing:.6px;text-transform:uppercase;
+  text-align:center;font-family:var(--font-mono)}
+table.sku-table th:first-child{text-align:left;border-radius:0}
+table.sku-table td{padding:8px 10px;border-bottom:1px solid var(--gray1);vertical-align:middle;text-align:center}
+table.sku-table td:first-child{text-align:left;font-weight:600;color:var(--gray5)}
+table.sku-table tbody tr:hover{background:var(--sky)}
+table.sku-table tbody tr:last-child td{border-bottom:none}
+table.sku-table input[type="number"]{
+  width:80px;border:1.5px solid var(--gray2);border-radius:6px;
+  padding:5px 8px;text-align:center;font-family:var(--font-mono);font-size:13px;
+  color:var(--gray5);background:#fff;outline:none}
+table.sku-table input[type="number"]:focus{border-color:var(--blue2);background:var(--sky)}
+.sku-total{font-family:var(--font-mono);font-weight:700;color:var(--green);font-size:14px}
+.sku-total-row td{background:var(--sky);font-weight:700;color:var(--navy);font-size:13px;border-top:2px solid var(--navy)}
+.sku-uom{font-size:11px;color:var(--gray3);font-family:var(--font-mono)}
+
+/* ── DAY TABS ── */
+.day-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.day-tab{padding:8px 18px;border-radius:100px;font-size:13px;font-weight:600;
+  cursor:pointer;border:1.5px solid var(--gray2);color:var(--gray4);
+  background:#fff;transition:all var(--transition)}
+.day-tab:hover{border-color:var(--blue2);color:var(--blue2)}
+.day-tab.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.day-content{display:none}.day-content.active{display:block}
+
+/* ── COMP TABLE ── */
+table.comp-table{width:100%;border-collapse:collapse;font-size:13px}
+table.comp-table th{background:var(--orange);color:#fff;padding:9px 12px;font-size:11px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase}
+table.comp-table td{padding:8px 10px;border-bottom:1px solid var(--gray1)}
+table.comp-table tbody tr:hover{background:#FFF8F0}
+table.comp-table input,table.comp-table select{
+  border:1px solid var(--gray2);border-radius:6px;padding:5px 8px;
+  font-family:var(--font-body);font-size:12.5px;color:var(--gray5);width:100%;outline:none}
+table.comp-table input:focus,table.comp-table select:focus{border-color:var(--orange)}
+.add-row-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;
+  border:1.5px dashed var(--gray2);border-radius:var(--radius-sm);
+  background:none;cursor:pointer;color:var(--gray3);font-size:13px;
+  font-family:var(--font-body);margin-top:8px;transition:all var(--transition)}
+.add-row-btn:hover{border-color:var(--orange);color:var(--orange);background:#FFF8F0}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;
+  border-radius:var(--radius-sm);font-family:var(--font-body);font-size:14px;
+  font-weight:600;cursor:pointer;border:none;transition:all var(--transition)}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--blue);box-shadow:var(--shadow-md)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-orange:hover{background:var(--orange2);box-shadow:0 4px 16px rgba(232,118,10,.35)}
+.btn-outline{background:none;border:1.5px solid var(--gray2);color:var(--gray4)}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#0B9655;box-shadow:0 4px 16px rgba(10,122,69,.3)}
+.btn-sm{padding:7px 14px;font-size:12.5px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;right:28px;padding:14px 20px;
+  border-radius:var(--radius);background:var(--green);color:#fff;font-weight:600;
+  font-size:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;
+  animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ── DASHBOARD ── */
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--gray2);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card.blue::before{background:var(--blue2)}
+.stat-card.orange::before{background:var(--orange)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.red::before{background:var(--red)}
+.stat-card.navy::before{background:var(--navy)}
+.sc-icon{font-size:24px;margin-bottom:8px}
+.sc-val{font-family:var(--font-head);font-size:28px;font-weight:800;color:var(--navy);line-height:1}
+.sc-label{font-size:12px;color:var(--gray3);margin-top:4px;font-weight:500}
+.sc-delta{font-size:11.5px;font-weight:700;margin-top:6px}
+.sc-delta.up{color:var(--green)}.sc-delta.dn{color:var(--red)}
+
+/* ── CHART PLACEHOLDER ── */
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:900px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:#fff;border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--gray2)}
+.chart-title{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:16px;
+  display:flex;justify-content:space-between;align-items:center}
+.chart-title span{font-size:11px;color:var(--gray3);font-weight:400;font-family:var(--font-body)}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:160px;padding-top:10px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{width:100%;background:var(--blue2);border-radius:4px 4px 0 0;transition:height .5s ease;
+  position:relative;min-height:4px;cursor:pointer}
+.bar:hover::after{content:attr(data-val);position:absolute;top:-28px;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;font-family:var(--font-mono);white-space:nowrap}
+.bar.orange{background:var(--orange)}
+.bar-lbl{font-size:10px;color:var(--gray3);text-align:center;font-weight:500}
+.bar-val{font-size:11px;font-weight:700;color:var(--navy);font-family:var(--font-mono)}
+
+/* Donut chart */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.donut-svg{width:140px;height:140px}
+.donut-legend{width:100%}
+.dl-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dl-name{flex:1;color:var(--gray4)}
+.dl-val{font-family:var(--font-mono);font-weight:700;color:var(--navy)}
+
+/* ── REPORTS TABLE ── */
+.reports-table-wrap{background:#fff;border-radius:var(--radius);border:1px solid var(--gray2);
+  overflow:hidden;box-shadow:var(--shadow-sm)}
+.rt-head{display:flex;justify-content:space-between;align-items:center;
+  padding:16px 22px;border-bottom:1px solid var(--gray1);background:var(--gray0)}
+.rt-head h3{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--navy)}
+table.rt{width:100%;border-collapse:collapse;font-size:13px}
+table.rt th{background:var(--navy);color:#fff;padding:10px 14px;font-size:10.5px;
+  font-weight:600;letter-spacing:.6px;text-transform:uppercase;text-align:left}
+table.rt td{padding:11px 14px;border-bottom:1px solid var(--gray1);vertical-align:middle}
+table.rt tbody tr:hover{background:var(--sky)}
+table.rt tbody tr:last-child td{border-bottom:none}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
+  border-radius:100px;font-size:11px;font-weight:700}
+.sb-green{background:var(--green-lt);color:var(--green)}
+.sb-orange{background:#FFF3E0;color:var(--orange)}
+.sb-red{background:var(--red-lt);color:var(--red)}
+.sb-gray{background:var(--gray1);color:var(--gray4)}
+.progress-bar{height:6px;background:var(--gray1);border-radius:3px;overflow:hidden}
+.pb-fill{height:100%;border-radius:3px;transition:width .5s ease}
+
+/* ── LEADERBOARD ── */
+.lb-wrap{background:#fff;border-radius:var(--radius);border:1px solid var(--gray2);
+  overflow:hidden;box-shadow:var(--shadow-sm)}
+.lb-item{display:flex;align-items:center;gap:14px;padding:14px 20px;
+  border-bottom:1px solid var(--gray1);transition:background var(--transition)}
+.lb-item:hover{background:var(--sky)}
+.lb-item:last-child{border-bottom:none}
+.lb-rank{font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--gray2);width:28px;flex-shrink:0}
+.lb-rank.r1{color:var(--amber)}.lb-rank.r2{color:var(--gray3)}.lb-rank.r3{color:var(--orange)}
+.lb-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+.lb-info{flex:1}
+.lb-name{font-weight:700;font-size:14px;color:var(--gray5)}
+.lb-sub{font-size:11.5px;color:var(--gray3);margin-top:1px}
+.lb-score{font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--navy)}
+.lb-delta{font-size:11px;color:var(--green);font-weight:700}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;padding:14px 20px;
+  background:#fff;border-radius:var(--radius);border:1px solid var(--gray2);box-shadow:var(--shadow-sm)}
+.filter-bar input,.filter-bar select{
+  border:1.5px solid var(--gray2);border-radius:var(--radius-sm);padding:8px 12px;
+  font-family:var(--font-body);font-size:13px;color:var(--gray5);background:#fff;outline:none;
+  transition:border-color var(--transition)}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--blue2)}
+.filter-bar label{font-size:11.5px;font-weight:600;color:var(--gray4);
+  display:flex;flex-direction:column;gap:4px}
+
+/* ── MODAL PREVIEW ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(11,30,69,.5);
+  z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--radius);max-width:720px;width:100%;
+  box-shadow:var(--shadow-lg);animation:fadeIn .25s ease}
+.modal-head{display:flex;justify-content:space-between;align-items:center;
+  padding:18px 24px;border-bottom:1px solid var(--gray1);background:var(--gray0)}
+.modal-head h3{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--navy)}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--gray3);
+  line-height:1;transition:color var(--transition)}
+.modal-close:hover{color:var(--red)}
+.modal-body{padding:24px}
+
+/* ── ANALYTICS DETAIL ── */
+.analytics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:24px}
+.perf-card{background:#fff;border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--gray2)}
+.perf-title{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;
+  text-transform:uppercase;letter-spacing:.5px}
+.metric-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--gray1)}
+.metric-row:last-child{border-bottom:none}
+.mr-label{font-size:13px;color:var(--gray4)}
+.mr-val{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--navy)}
+.mr-bar{height:4px;background:var(--gray1);border-radius:2px;margin-top:4px;overflow:hidden}
+.mrb-fill{height:100%;border-radius:2px;background:var(--blue2)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .page{padding:16px}
+  .fh-top{flex-direction:column}
+  .chart-grid{grid-template-columns:1fr}
+  .dash-stats{grid-template-columns:1fr 1fr}
+}
+
+.section-divider{height:1px;background:linear-gradient(90deg,var(--orange),transparent);
+  margin:8px 0 20px;border:none}
+
+.info-box{background:var(--sky);border:1px solid var(--sky2);border-radius:var(--radius-sm);
+  padding:12px 16px;font-size:13px;color:var(--blue);margin-top:8px;
+  display:flex;gap:10px;align-items:flex-start}
+.warn-box{background:#FFF8F0;border:1px solid #FFDCB0;border-radius:var(--radius-sm);
+  padding:12px 16px;font-size:13px;color:var(--orange);margin-top:8px;
+  display:flex;gap:10px;align-items:flex-start}
+
+.print-btn{display:none}
+@media print{
+  .sidebar,.topbar,.print-btn,.btn-orange,.btn-primary,.btn-outline,
+  .day-tabs,.add-row-btn,.form-actions-bar{display:none!important}
+  .main{margin-left:0}
+  .page{padding:10px}
+  .print-btn{display:inline-flex}
+  .form-section{break-inside:avoid}
+}
+</style>
 </head>
 <body>
 
-  <!-- Login Page -->
-  <div id="loginPage" class="login-container">
-    <div class="login-card">
-      <div class="login-header">
-        <h1>ALCOBINA</h1>
-        <p>Welcome back! Please login to continue</p>
-      </div>
-      
-      <div id="loginError" class="error-message">
-        <i class="fas fa-exclamation-circle"></i>
-        <span id="loginErrorText"></span>
-      </div>
-
-      <form id="loginForm">
-        <div class="form-group">
-          <label><i class="fas fa-envelope"></i> Email Address</label>
-          <input type="email" id="loginEmail" required placeholder="Enter your email">
-        </div>
-
-        <div class="form-group">
-          <label><i class="fas fa-lock"></i> Password</label>
-          <input type="password" id="loginPassword" required placeholder="Enter your password">
-        </div>
-
-        <button type="submit" class="btn-primary" id="loginBtn">
-          <i class="fas fa-sign-in-alt"></i> <span>Login</span>
-        </button>
-      </form>
+<!-- ════════════════════════════════════════════════ -->
+<!-- SIDEBAR -->
+<!-- ════════════════════════════════════════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">AB</div>
+      <div class="logo-txt">AlcoBina<small>Promotion System</small></div>
     </div>
   </div>
-
-  <!-- App Container -->
-  <div id="appContainer" class="app-container" style="display:none;">
-    <!-- Mobile Toggle Button -->
-    <button id="mobile-toggle-btn" onclick="toggleSidebar()">
-      <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div id="sidebar">
-      <div class="sidebar-header" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i> ALCOBINA
+  <div class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Promoter</div>
+      <div class="nav-item active" onclick="showPage('form')">
+        <span class="ni">📋</span>Promotion Form
+        <span class="nav-badge" id="nb-form">1</span>
       </div>
-      <div class="menu-items">
-        <div class="menu-item active" onclick="showWelcome()">
-          <i class="fas fa-home"></i><span>Home</span>
-        </div>
-        <div class="menu-item" onclick="showInventory()">
-          <i class="fas fa-boxes"></i><span>Inventory History</span>
-        </div>
-        <div class="menu-item" onclick="showPOS()">
-          <i class="fas fa-cash-register"></i><span>POS</span>
-        </div>
-        <div class="menu-item" onclick="showPriceList()">
-          <i class="fas fa-tags"></i><span>Price List</span>
-        </div>
-        <div class="menu-item" onclick="showComingSoon('Sales Dashboard', 'chart-line')">
-          <i class="fas fa-chart-line"></i><span>Sales Dashboard</span>
-        </div>
-        <div class="menu-item" onclick="showCustomers()">
-          <i class="fas fa-users"></i><span>Customers</span>
-        </div>
-        <div class="menu-item" onclick="showItemLookup()">
-          <i class="fas fa-search"></i><span>Item Lookup</span>
-        </div>
-        <div class="menu-item" onclick="showComingSoon('Collections', 'money-bill-wave')">
-          <i class="fas fa-money-bill-wave"></i><span>Collections</span>
-        </div>
-        <div class="menu-item" onclick="showComingSoon('Purchase History', 'shopping-cart')">
-          <i class="fas fa-shopping-cart"></i><span>Purchase History</span>
-        </div>
-      </div>
-      <div class="sidebar-footer">
-        <button class="logout-btn" onclick="logout()">
-          <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
-        <div class="powered-by">Powered by <strong>ALCOBINA</strong></div>
+      <div class="nav-item" onclick="showPage('preview')">
+        <span class="ni">👁</span>My Submissions
       </div>
     </div>
-
-    <!-- Main Content -->
-    <div id="main-content">
-      <!-- Welcome Screen -->
-      <div id="welcome-section" class="welcome-container" style="display: flex;">
-        <div class="welcome-card">
-          <h1>👋 Welcome</h1>
-          <div class="username" id="welcome-username">User</div>
-          <p>To the ALCOBINA Portal<br>
-          <strong id="business-name-display">Your Business</strong><br>
-          Client ID: <strong id="client-id-display">Loading...</strong><br>
-          User UID: <strong id="user-uid-display">Loading...</strong></p>
-          <p style="margin-top: 20px;">Please select an option from the menu to get started</p>
-        </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Management</div>
+      <div class="nav-item" onclick="showPage('dashboard')">
+        <span class="ni">📊</span>Dashboard
       </div>
-
-      <!-- Inventory History Section -->
-      <div id="inventory-section" class="data-section">
-        <div class="section-header">
-          <h2><i class="fas fa-boxes"></i> Inventory History</h2>
-          <button class="btn-primary" onclick="openAddInventoryModal()">
-            <i class="fas fa-plus"></i> Add Inventory Entry
-          </button>
-        </div>
-
-        <div class="search-box">
-          <input type="text" id="inventorySearchInput" placeholder="🔍 Search by item name, barcode, category, vendor..." onkeyup="filterInventory()">
-        </div>
-
-        <div id="inventoryContainer"></div>
+      <div class="nav-item" onclick="showPage('analytics')">
+        <span class="ni">📈</span>Analytics
       </div>
-
-      <!-- Price List Section -->
-      <div id="price-list-section" class="data-section">
-        <div class="section-header">
-          <h2><i class="fas fa-tags"></i> Price List</h2>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn-primary" id="downloadSelectedPDF" onclick="downloadSelectedPricePDF()" disabled>
-              <i class="fas fa-download"></i> Download PDF
-            </button>
-            <button class="btn-primary" id="emailSelectedPDF" onclick="emailSelectedPricePDF()" disabled>
-              <i class="fas fa-envelope"></i> Email PDF
-            </button>
-            <button class="btn-primary" onclick="downloadAllPricesPDF()">
-              <i class="fas fa-file-pdf"></i> Download All
-            </button>
-            <button class="btn-primary" onclick="syncPriceListFromInventory()">
-              <i class="fas fa-sync"></i> Sync Costs
-            </button>
-          </div>
-        </div>
-
-        <div class="search-box">
-          <input type="text" id="priceSearchInput" placeholder="🔍 Search by item name, number, or description..." onkeyup="filterPriceList()">
-        </div>
-
-        <div id="priceListContainer"></div>
+      <div class="nav-item" onclick="showPage('leaderboard')">
+        <span class="ni">🏆</span>Performance
       </div>
-
-      <!-- Customers Section -->
-      <div id="customers-section" class="data-section">
-        <div class="section-header">
-          <h2><i class="fas fa-users"></i> Customers</h2>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn-secondary" onclick="showBulkUploadInstructions()">
-              <i class="fas fa-file-excel"></i> Bulk Upload
-            </button>
-            <button class="btn-primary" onclick="openAddCustomerModal()">
-              <i class="fas fa-user-plus"></i> Add Customer
-            </button>
-          </div>
-        </div>
-
-        <div class="search-box">
-          <input type="text" id="customerSearchInput" placeholder="🔍 Search customers..." onkeyup="filterCustomers()">
-        </div>
-
-        <div id="customersContainer"></div>
+      <div class="nav-item" onclick="showPage('reports')">
+        <span class="ni">📁</span>All Reports
       </div>
-
-      <!-- Item Lookup Section -->
-      <div id="item-lookup-section" class="data-section" style="display:none;">
-        <div class="section-header">
-          <h2><i class="fas fa-search"></i> Item Lookup</h2>
-        </div>
-
-        <div class="search-box">
-          <input type="text" id="itemLookupSearchInput" placeholder="🔍 Search by item name, number, barcode, or description..." onkeyup="filterItemLookup()">
-        </div>
-
-        <div id="itemLookupContainer"></div>
-      </div>
-      <!-- POS Section -->
-      <div id="pos-section" class="data-section" style="display:none;">
-        <div class="section-header">
-          <h2><i class="fas fa-cash-register"></i> Point of Sale</h2>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn-secondary" onclick="openSearchTransactions()">
-              <i class="fas fa-search"></i> Search Transactions
-            </button>
-            <button class="btn-primary" onclick="clearPOS()">
-              <i class="fas fa-plus"></i> New Sale
-            </button>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 450px; gap: 20px; margin-top: 20px;">
-          
-          <!-- LEFT: Sale Builder -->
-          <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: var(--shadow);">
-            
-            <!-- Customer & Rep Selection -->
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px;">
-              <div class="form-group" style="margin: 0;">
-                <label><i class="fas fa-user"></i> Customer *</label>
-                <select id="posCustomer" onchange="handleCustomerChange()" required>
-                  <option value="">Select Customer...</option>
-                </select>
-                <div id="customerInfo" style="display: none; margin-top: 8px; padding: 10px; background: #e3f2fd; border-radius: 5px; font-size: 13px;">
-                  <div><strong>Email:</strong> <span id="customerEmail">-</span></div>
-                  <div id="creditLimitInfo" style="display: none;">
-                    <strong>Credit Limit:</strong> $<span id="customerCreditLimit">0</span>
-                    <span id="creditWarning" style="color: #f44336; font-weight: 600; display: none;"></span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="form-group" style="margin: 0;">
-                <label><i class="fas fa-id-badge"></i> Rep ID</label>
-                <input type="number" id="posRepId" value="1" min="1" readonly style="background: #f5f5f5;">
-              </div>
-            </div>
-
-            <!-- Transaction Type & Payment Terms -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-              <div class="form-group" style="margin: 0;">
-                <label><i class="fas fa-dollar-sign"></i> Transaction Type</label>
-                <select id="posTransactionType" onchange="handleTransactionTypeChange()">
-                  <option value="Cash">Cash</option>
-                  <option value="Credit">Credit</option>
-                </select>
-              </div>
-              
-              <div class="form-group" style="margin: 0;">
-                <label><i class="fas fa-calendar"></i> Payment Terms (Days)</label>
-                <select id="posPaymentTerms" disabled>
-                  <option value="0">0 (Immediate)</option>
-                  <option value="14">14 Days</option>
-                  <option value="30">30 Days</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Item Selection -->
-            <div style="background: #f9f9f9; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-              <h3 style="margin: 0 0 15px 0; font-size: 16px;"><i class="fas fa-shopping-cart"></i> Add Items</h3>
-              
-              <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 100px; gap: 10px; align-items: end;">
-                <div class="form-group" style="margin: 0;">
-                  <label>Item</label>
-                  <select id="posItemSelect" onchange="handleItemSelect()">
-                    <option value="">Select item...</option>
-                  </select>
-                  <small id="itemStock" style="color: #666; margin-top: 5px; display: none;">
-                    Stock: <span id="itemStockQty">0</span> available
-                  </small>
-                </div>
-                
-                <div class="form-group" style="margin: 0;">
-                  <label>Quantity</label>
-                  <input type="number" id="posQuantity" min="1" value="1">
-                </div>
-                
-                <div class="form-group" style="margin: 0;">
-                  <label>Discount %</label>
-                  <input type="number" id="posDiscount" min="0" max="100" value="0" step="0.01">
-                </div>
-                
-                <button class="btn-primary" onclick="addItemToSale()" style="height: 42px;">
-                  <i class="fas fa-plus"></i> Add
-                </button>
-              </div>
-            </div>
-
-            <!-- Cart Items -->
-            <div style="margin-bottom: 20px;">
-              <h3 style="margin: 0 0 10px 0; font-size: 16px;"><i class="fas fa-list"></i> Cart Items</h3>
-              <div id="posCartItems" style="max-height: 300px; overflow-y: auto;">
-                <div style="text-align: center; padding: 40px; color: #999;">
-                  <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 10px;"></i>
-                  <p>No items added yet</p>
-                </div>
-              </div>
-            </div>
-
-
-            <!-- Pre-Sale Actions -->
-            <div id="preSaleActions" style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
-              <button onclick="sendQuote()" class="btn-secondary" style="flex: 1; min-width: 140px;">
-                <i class="fas fa-file-invoice"></i> Send Quote
-              </button>
-              <button onclick="generatePDFReceipt()" class="btn-secondary" style="flex: 1; min-width: 140px;">
-                <i class="fas fa-file-pdf"></i> PDF (COPY)
-              </button>
-              <button onclick="emailReceiptCopy()" class="btn-secondary" style="flex: 1; min-width: 140px;">
-                <i class="fas fa-envelope"></i> Email (COPY)
-              </button>
-              <button onclick="printReceipt()" class="btn-secondary" style="flex: 1; min-width: 140px;">
-                <i class="fas fa-print"></i> Print
-              </button>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-              <button class="btn-secondary" onclick="voidAllItems()" style="flex: 1;">
-                <i class="fas fa-trash"></i> Void All
-              </button>
-              <button class="btn-primary" onclick="submitSale()" style="flex: 2;">
-                <i class="fas fa-check-circle"></i> Complete Sale
-              </button>
-            </div>
-          </div>
-
-          <!-- RIGHT: Receipt Preview -->
-          <div>
-            <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: var(--shadow); position: sticky; top: 20px;">
-              <h3 style="text-align: center; margin: 0 0 20px 0; font-size: 18px; color: var(--primary-color);">
-                <i class="fas fa-receipt"></i> Receipt Preview
-              </h3>
-              
-              <div id="receiptPreview" style="font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6;">
-                <!-- Receipt will be generated here -->
-                <div style="text-align: center; color: #999; padding: 60px 20px;">
-                  <i class="fas fa-receipt" style="font-size: 48px; margin-bottom: 10px;"></i>
-                  <p>Add items to see receipt</p>
-                </div>
-              </div>
-
-              <!-- Email & PDF Buttons -->
-              <div id="receiptActions" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px dashed #ddd;">
-                <div style="display: flex; gap: 10px;">
-                  <button class="btn-secondary" onclick="emailReceipt()" style="flex: 1;">
-                    <i class="fas fa-envelope"></i> Email
-                  </button>
-                  <button class="btn-primary" onclick="downloadReceiptPDF()" style="flex: 1;">
-                    <i class="fas fa-download"></i> PDF
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Coming Soon Screen -->
-      <div id="coming-soon-section" style="display:none; text-align:center; padding:60px 20px;">
-        <div style="background:white; border-radius:20px; padding:60px 40px; box-shadow:var(--shadow-lg); max-width:600px; margin:0 auto;">
-          <div style="font-size:80px; margin-bottom:20px;">
-            <i id="coming-soon-icon" class="fas fa-rocket" style="background:var(--primary-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;"></i>
-          </div>
-          <h2 id="coming-soon-title" style="font-size:36px; margin-bottom:15px; background:var(--primary-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Coming Soon</h2>
-          <p id="coming-soon-text" style="color:var(--text-gray); font-size:18px;">We're working hard to bring you this feature. Stay tuned!</p>
-        </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">System</div>
+      <div class="nav-item" onclick="showPage('settings')">
+        <span class="ni">⚙️</span>Settings
       </div>
     </div>
   </div>
+  <div class="sidebar-footer">
+    <div class="sf-time">Live: <span id="live-clock">--:--:--</span></div>
+  </div>
+</nav>
 
-  <!-- Add/Edit Inventory Modal -->
-  <div id="inventoryModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="inventoryModalTitle"><i class="fas fa-box"></i> Add Inventory Entry</h2>
-        <button class="modal-close" onclick="closeInventoryModal()"><i class="fas fa-times"></i></button>
+<!-- ════════════════════════════════════════════════ -->
+<!-- MAIN -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title">AlcoBina <span>× Pings</span> Promotion System</div>
+    <div class="topbar-meta">
+      <span class="tb-tag" id="top-date">Loading…</span>
+      <span class="tb-tag orange" id="top-submissions">0 Submissions Today</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="clearForm()">🔄 New Form</button>
+      <button class="btn btn-orange btn-sm" onclick="showPage('dashboard')">📊 Dashboard</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: PROMOTION FORM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page active" id="page-form">
+
+    <!-- Header -->
+    <div class="form-header">
+      <div class="fh-top">
+        <div class="fh-brand">
+          <div class="fh-icon">📋</div>
+          <div class="fh-txt">
+            <h2>In-Store Promotion Report</h2>
+            <p>Pings Manufacturing Limited — FMCG Activation Form</p>
+          </div>
+        </div>
+        <div class="fh-ts">
+          <div class="ts-label">Timestamp</div>
+          <div class="ts-val" id="form-timestamp">Loading…</div>
+          <div class="ts-uid" id="form-uid">Form ID: —</div>
+        </div>
       </div>
-      <div class="modal-body">
-        <!-- Mode Selection -->
-        <div class="form-group" id="inventoryModeSelection">
-          <label style="font-weight: 600; font-size: 16px; margin-bottom: 15px; display: block;">
-            <i class="fas fa-layer-group"></i> Select Mode:
-          </label>
-          <div style="display: flex; gap: 10px;">
-            <button type="button" class="btn-mode active" id="btnNewItem" onclick="setInventoryMode('new')">
-              <i class="fas fa-plus-circle"></i> Create New Item
-            </button>
-            <button type="button" class="btn-mode" id="btnExistingItem" onclick="setInventoryMode('existing')">
-              <i class="fas fa-search"></i> Select Existing Item
-            </button>
+    </div>
+
+    <!-- §1 — PROMOTION DETAILS -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">1</div>
+        <div>
+          <div class="fs-title">Promotion Details</div>
+          <div class="fs-desc">General information about this activation</div>
+        </div>
+        <div class="fs-icon">📌</div>
+      </div>
+      <div class="fs-body">
+        <div class="fg fg-3">
+          <div class="field">
+            <label class="field-required">Promoter Name</label>
+            <input type="text" id="promoter-name" placeholder="Full name" required>
+          </div>
+          <div class="field">
+            <label class="field-required">Promoter ID / Code</label>
+            <input type="text" id="promoter-id" placeholder="e.g. PMS-001">
+          </div>
+          <div class="field">
+            <label>Supervisor Name</label>
+            <input type="text" id="supervisor-name" placeholder="Direct supervisor">
           </div>
         </div>
-
-        <!-- Search Existing Items -->
-        <div class="form-group" id="existingItemSearch" style="display: none;">
-          <label><i class="fas fa-search"></i> Search Existing Items</label>
-          <input type="text" id="inventorySearchBox" placeholder="🔍 Search or view all unique items..." oninput="searchExistingInventory()">
-          <div id="searchResults" style="margin-top: 10px; max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius); display: none;"></div>
+        <div class="fg fg-3" style="margin-top:14px">
+          <div class="field">
+            <label class="field-required">Promotion Start Date</label>
+            <input type="date" id="promo-start" onchange="updateDayTabs()">
+          </div>
+          <div class="field">
+            <label class="field-required">Promotion End Date</label>
+            <input type="date" id="promo-end" onchange="updateDayTabs()">
+          </div>
+          <div class="field">
+            <label>No. of Promotion Days</label>
+            <input type="number" id="promo-days" readonly placeholder="Auto-calculated">
+          </div>
         </div>
-
-        <form id="inventoryForm">
-          <input type="hidden" id="inventoryDocId">
-          <input type="hidden" id="inventoryMode" value="new">
-          
-          <div class="form-group">
-            <label><i class="fas fa-hashtag"></i> Item Number *</label>
-            <input type="text" id="inventoryItemNumber" required placeholder="e.g., IME-001">
+        <div class="fg fg-2" style="margin-top:14px">
+          <div class="field">
+            <label class="field-required">Check-In Timestamp</label>
+            <input type="text" id="checkin-time" readonly>
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-box"></i> Item Name *</label>
-            <input type="text" id="inventoryItemName" required placeholder="e.g., Busta - 355 ML">
+          <div class="field">
+            <label>GPS / Location Tag</label>
+            <input type="text" id="gps-location" placeholder="Fetching location…" readonly>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <div class="form-group">
-            <label><i class="fas fa-barcode"></i> Barcode *</label>
-            <input type="text" id="inventoryBarcode" required placeholder="e.g., 000129100031">
+    <!-- §2 — CUSTOMER / STORE DETAILS -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">2</div>
+        <div>
+          <div class="fs-title">Customer / Store Information</div>
+          <div class="fs-desc">Where the promotion is being conducted</div>
+        </div>
+        <div class="fs-icon">🏪</div>
+      </div>
+      <div class="fs-body">
+        <div class="fg fg-2">
+          <div class="field">
+            <label class="field-required">Customer / Store Name</label>
+            <input type="text" id="customer-name" placeholder="Store or wholesale name">
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-align-left"></i> Description</label>
-            <textarea id="inventoryDescription" placeholder="e.g., Pineapple"></textarea>
+          <div class="field">
+            <label>Contact Person at Store</label>
+            <input type="text" id="store-contact" placeholder="Store manager/owner name">
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-tag"></i> Category *</label>
-            <select id="inventoryCategory" required>
-              <option value="">Select Category</option>
-              <option value="Beverage">Beverage</option>
-              <option value="Food">Food</option>
-              <option value="Snacks">Snacks</option>
-              <option value="Alcohol">Alcohol</option>
-              <option value="Supplies">Supplies</option>
-              <option value="Other">Other</option>
+        </div>
+        <div class="fg fg-3" style="margin-top:14px">
+          <div class="field">
+            <label class="field-required">Store Address</label>
+            <input type="text" id="store-address" placeholder="Full address">
+          </div>
+          <div class="field">
+            <label class="field-required">Parish</label>
+            <select id="store-parish">
+              <option value="">Select parish…</option>
+              <option>Kingston & St. Andrew</option>
+              <option>St. Catherine</option>
+              <option>Clarendon</option>
+              <option>Manchester</option>
+              <option>St. Elizabeth</option>
+              <option>St. James</option>
+              <option>Hanover</option>
+              <option>Westmoreland</option>
+              <option>St. Mary</option>
+              <option>St. Ann</option>
+              <option>Trelawny</option>
+              <option>Portland</option>
+              <option>St. Thomas</option>
             </select>
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-cubes"></i> Quantity *</label>
-            <input type="number" id="inventoryQuantity" required min="0" placeholder="e.g., 50">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-dollar-sign"></i> Unit Cost *</label>
-            <input type="number" id="inventoryUnitCost" required min="0" step="0.01" placeholder="e.g., 1500">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-balance-scale"></i> Unit of Measure *</label>
-            <select id="inventoryUnitOfMeasure" required>
-              <option value="">Select Unit</option>
-              <option value="cs">Case (cs)</option>
-              <option value="box">Box</option>
-              <option value="bottle">Bottle</option>
-              <option value="can">Can</option>
-              <option value="unit">Unit</option>
-              <option value="pack">Pack</option>
-              <option value="liter">Liter</option>
+          <div class="field">
+            <label>Store Type</label>
+            <select id="store-type">
+              <option value="">Select type…</option>
+              <option>Supermarket</option>
+              <option>Wholesale</option>
+              <option>Variety / Convenience</option>
+              <option>Pharmacy / Health Store</option>
+              <option>Hardware / General Store</option>
+              <option>Mini Mart</option>
+              <option>Other</option>
             </select>
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-truck"></i> Vendor *</label>
-            <input type="text" id="inventoryVendor" required placeholder="e.g., Sampars">
+        </div>
+        <div class="fg fg-3" style="margin-top:14px">
+          <div class="field">
+            <label>Store Phone</label>
+            <input type="tel" id="store-phone" placeholder="Store contact number">
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-calendar"></i> Posting Date *</label>
-            <input type="datetime-local" id="inventoryPostingDate" required>
+          <div class="field">
+            <label>Store Email</label>
+            <input type="email" id="store-email" placeholder="Store email (if available)">
           </div>
-
-          <button type="submit" class="btn-primary">
-            <i class="fas fa-save"></i> Save Entry
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add/Edit Price Modal -->
-  <div id="priceModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="priceModalTitle"><i class="fas fa-tag"></i> Add Price Item</h2>
-        <button class="modal-close" onclick="closePriceModal()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <form id="priceForm">
-          <input type="hidden" id="priceDocId">
-          
-          <div class="form-group">
-            <label><i class="fas fa-hashtag"></i> Item Number *</label>
-            <input type="text" id="priceItemNumber" required placeholder="e.g., ITEM-002">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-box"></i> Item Name *</label>
-            <input type="text" id="priceItemName" required placeholder="e.g., Corona Extra 355 ML">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-align-left"></i> Description</label>
-            <textarea id="priceDescription" placeholder="Optional item description"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-dollar-sign"></i> Unit Cost *</label>
-            <input type="number" id="priceUnitCost" required min="0" step="0.01" placeholder="e.g., 1500">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-percentage"></i> Margin (%) *</label>
-            <input type="number" id="priceMargin" required min="0" max="100" step="0.1" placeholder="e.g., 12">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-balance-scale"></i> Unit of Measure *</label>
-            <select id="priceUnitOfMeasure" required>
-              <option value="">Select Unit</option>
-              <option value="Case">Case</option>
-              <option value="Box">Box</option>
-              <option value="Bottle">Bottle</option>
-              <option value="Can">Can</option>
-              <option value="Unit">Unit</option>
-              <option value="Pack">Pack</option>
-              <option value="Liter">Liter</option>
+          <div class="field">
+            <label>Activation Type</label>
+            <select id="activation-type">
+              <option value="">Select…</option>
+              <option>Dry Push</option>
+              <option>Consumer Deal Promotion</option>
+              <option>Dry Push + Consumer Deal</option>
+              <option>Sampling Activation</option>
+              <option>Shelf Merchandising</option>
+              <option>POSM Placement</option>
+              <option>Full Brand Activation</option>
             </select>
           </div>
-
-          <button type="submit" class="btn-primary">
-            <i class="fas fa-save"></i> Save Item
-          </button>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Add/Edit Customer Modal -->
-  <div id="customerModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="customerModalTitle"><i class="fas fa-user"></i> Add Customer</h2>
-        <button class="modal-close" onclick="closeCustomerModal()"><i class="fas fa-times"></i></button>
+    <!-- §3 — OPENING INVENTORY -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">3</div>
+        <div>
+          <div class="fs-title">Opening Inventory by SKU</div>
+          <div class="fs-desc">Record stock available at the start of the promotion</div>
+        </div>
+        <div class="fs-icon">📦</div>
       </div>
-      <div class="modal-body">
-        <form id="customerForm">
-          <input type="hidden" id="customerDocId">
-          <input type="hidden" id="customerNumber">
-          
-          <div class="form-group">
-            <label><i class="fas fa-user"></i> Customer Name *</label>
-            <input type="text" id="customerName" required placeholder="e.g., John's Store">
-          </div>
+      <div class="fs-body">
+        <div class="info-box">ℹ️ Count and record all Pings product inventory present in-store at the start of Day 1. This establishes your baseline for sell-through calculations.</div>
+        <div style="margin-top:16px" class="sku-table-wrap">
+          <table class="sku-table" id="inventory-table">
+            <thead>
+              <tr>
+                <th style="width:220px">Product / SKU</th>
+                <th>Unit of Measure</th>
+                <th>Units per Case</th>
+                <th>Opening Cases</th>
+                <th>Opening Units</th>
+                <th>Unit Price (J$)</th>
+                <th>Opening Value (J$)</th>
+                <th>Shelf Location</th>
+              </tr>
+            </thead>
+            <tbody id="inv-tbody">
+              <!-- populated by JS -->
+            </tbody>
+            <tfoot>
+              <tr class="sku-total-row">
+                <td colspan="4"><strong>TOTAL OPENING</strong></td>
+                <td><span class="sku-total" id="total-opening-units">0</span></td>
+                <td>—</td>
+                <td><span class="sku-total" id="total-opening-value">J$0</span></td>
+                <td>—</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
 
-          <div class="form-group">
-            <label><i class="fas fa-tag"></i> Customer Type</label>
-            <select id="customerType">
-              <option value="Retail">Retail</option>
-              <option value="Wholesale">Wholesale</option>
-              <option value="Distributor">Distributor</option>
-              <option value="Restaurant">Restaurant</option>
-              <option value="Bar">Bar</option>
-              <option value="Hotel">Hotel</option>
+    <!-- §4 — DAILY SALES -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">4</div>
+        <div>
+          <div class="fs-title">Daily Sales by SKU</div>
+          <div class="fs-desc">Record units sold by the promoter each day</div>
+        </div>
+        <div class="fs-icon">📊</div>
+      </div>
+      <div class="fs-body">
+        <div class="day-tabs" id="day-tabs">
+          <button class="day-tab active" onclick="switchDay(0)" id="dtab-0">Day 1</button>
+          <button class="day-tab" onclick="switchDay(1)" id="dtab-1">Day 2</button>
+        </div>
+        <div id="day-panels">
+          <!-- populated by JS -->
+        </div>
+        <!-- Totals Summary -->
+        <div style="margin-top:20px">
+          <div style="font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px">📊 Cumulative Sales Summary</div>
+          <div class="sku-table-wrap">
+            <table class="sku-table" id="summary-table">
+              <thead>
+                <tr>
+                  <th style="width:200px">Product / SKU</th>
+                  <th id="sum-d1h">Day 1</th>
+                  <th id="sum-d2h">Day 2</th>
+                  <th>Total Units Sold</th>
+                  <th>Opening Units</th>
+                  <th>Sell-Through %</th>
+                  <th>Closing Stock</th>
+                </tr>
+              </thead>
+              <tbody id="summary-tbody"></tbody>
+              <tfoot>
+                <tr class="sku-total-row">
+                  <td><strong>GRAND TOTAL</strong></td>
+                  <td><span class="sku-total" id="gt-d1">0</span></td>
+                  <td><span class="sku-total" id="gt-d2">0</span></td>
+                  <td><span class="sku-total" id="gt-total">0</span></td>
+                  <td><span class="sku-total" id="gt-opening">0</span></td>
+                  <td><span class="sku-total" id="gt-pct">0%</span></td>
+                  <td><span class="sku-total" id="gt-closing">0</span></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §5 — COMPETITION DAILY LOG -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">5</div>
+        <div>
+          <div class="fs-title">Competition Activity Log</div>
+          <div class="fs-desc">Record competitor promotions and activities observed each day</div>
+        </div>
+        <div class="fs-icon">🔍</div>
+      </div>
+      <div class="fs-body">
+        <div class="warn-box">⚠️ Record ALL competitor activity observed — promotions, pricing, shelf placements, staff presence, BOGO deals, and POP materials. This intelligence is critical for management.</div>
+        <div style="margin-top:16px;overflow-x:auto">
+          <table class="comp-table" id="comp-table">
+            <thead>
+              <tr>
+                <th style="width:70px">Day</th>
+                <th style="width:140px">Competitor Brand</th>
+                <th style="width:130px">Activity Type</th>
+                <th style="width:160px">Product / SKU Affected</th>
+                <th style="width:100px">Price Observed</th>
+                <th>Details / Notes</th>
+                <th style="width:80px">Threat Level</th>
+                <th style="width:40px"></th>
+              </tr>
+            </thead>
+            <tbody id="comp-tbody">
+              <tr>
+                <td><select name="comp-day" style="width:55px"><option>Day 1</option><option>Day 2</option></select></td>
+                <td><input type="text" placeholder="Brand name"></td>
+                <td><select><option value="">Type…</option><option>BOGO</option><option>Price Reduction</option><option>Sampling</option><option>Paid Shelf</option><option>Poster Campaign</option><option>Promoter Present</option><option>Price Tag Removal</option><option>Other</option></select></td>
+                <td><input type="text" placeholder="Product/SKU"></td>
+                <td><input type="text" placeholder="e.g. J$250/unit"></td>
+                <td><input type="text" placeholder="Describe the activity in detail…"></td>
+                <td><select><option value="">—</option><option>🟢 Low</option><option>🟡 Medium</option><option>🔴 High</option><option>🚨 Critical</option></select></td>
+                <td><button type="button" onclick="removeRow(this)" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:16px">✕</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" class="add-row-btn" onclick="addCompRow()">+ Add Competitor Entry</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- §6 — REORDER RECOMMENDATION -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">6</div>
+        <div>
+          <div class="fs-title">Reorder Recommendations</div>
+          <div class="fs-desc">Recommended stock replenishment for the store after the promotion</div>
+        </div>
+        <div class="fs-icon">🔄</div>
+      </div>
+      <div class="fs-body">
+        <div class="sku-table-wrap">
+          <table class="sku-table">
+            <thead>
+              <tr>
+                <th style="width:200px">Product / SKU</th>
+                <th>Closing Stock (Units)</th>
+                <th>Recommended Reorder (Cases)</th>
+                <th>Reorder Urgency</th>
+                <th>Reason / Notes</th>
+              </tr>
+            </thead>
+            <tbody id="reorder-tbody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div class="fg fg-2" style="margin-top:16px">
+          <div class="field">
+            <label>Suggested Reorder Date</label>
+            <input type="date" id="reorder-date">
+          </div>
+          <div class="field">
+            <label>Preferred Delivery Window</label>
+            <select id="delivery-window">
+              <option>Within 24 hours</option>
+              <option>Within 48 hours</option>
+              <option>Within 3 days</option>
+              <option>Within 1 week</option>
+              <option>No urgency</option>
             </select>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <div class="form-group">
-            <label><i class="fas fa-phone"></i> Phone</label>
-            <input type="tel" id="customerPhone" placeholder="e.g., (876) 123-4567">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-envelope"></i> Email</label>
-            <input type="email" id="customerEmail" placeholder="e.g., customer@email.com">
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-map-marker-alt"></i> Parish</label>
-            <select id="customerParish">
-              <option value="">Select Parish</option>
-              <option value="Kingston">Kingston</option>
-              <option value="St. Andrew">St. Andrew</option>
-              <option value="St. Catherine">St. Catherine</option>
-              <option value="Clarendon">Clarendon</option>
-              <option value="Manchester">Manchester</option>
-              <option value="St. Elizabeth">St. Elizabeth</option>
-              <option value="Westmoreland">Westmoreland</option>
-              <option value="Hanover">Hanover</option>
-              <option value="St. James">St. James</option>
-              <option value="Trelawny">Trelawny</option>
-              <option value="St. Ann">St. Ann</option>
-              <option value="St. Mary">St. Mary</option>
-              <option value="Portland">Portland</option>
-              <option value="St. Thomas">St. Thomas</option>
+    <!-- §7 — SHELF & MERCHANDISING -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">7</div>
+        <div>
+          <div class="fs-title">Shelf & Merchandising Assessment</div>
+          <div class="fs-desc">Evaluate in-store presence and brand visibility</div>
+        </div>
+        <div class="fs-icon">🏷</div>
+      </div>
+      <div class="fs-body">
+        <div class="fg fg-3">
+          <div class="field">
+            <label>Shelf Position Quality</label>
+            <select id="shelf-position">
+              <option>Excellent — Eye level, primary aisle</option>
+              <option>Good — Visible, secondary position</option>
+              <option>Fair — Low shelf, limited visibility</option>
+              <option>Poor — Hidden / no display</option>
             </select>
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-map-pin"></i> Address</label>
-            <textarea id="customerAddress" placeholder="Full address"></textarea>
+          <div class="field">
+            <label>POP Materials Present?</label>
+            <select id="pop-materials">
+              <option>Yes — Full POP suite in place</option>
+              <option>Yes — Partial (some materials)</option>
+              <option>No — None present</option>
+              <option>Damaged / needs replacement</option>
+            </select>
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-credit-card"></i> Credit Limit</label>
-            <input type="number" id="customerCreditLimit" min="0" step="0.01" placeholder="e.g., 50000">
+          <div class="field">
+            <label>Price Tags Visible?</label>
+            <select id="price-tags">
+              <option>Yes — All products priced</option>
+              <option>Partial — Some missing</option>
+              <option>No — None visible</option>
+              <option>Competitor tags present on Pings stock</option>
+            </select>
           </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-sticky-note"></i> Notes</label>
-            <textarea id="customerNotes" placeholder="Additional notes about the customer"></textarea>
+        </div>
+        <div class="fg fg-3" style="margin-top:14px">
+          <div class="field">
+            <label>Planogram Compliance</label>
+            <select id="planogram">
+              <option>Fully compliant</option>
+              <option>Mostly compliant</option>
+              <option>Non-compliant</option>
+              <option>No planogram in place</option>
+            </select>
           </div>
+          <div class="field">
+            <label>Number of Facings (Pings)</label>
+            <input type="number" id="facings-count" min="0" placeholder="Count">
+          </div>
+          <div class="field">
+            <label>Competitor Facings Observed</label>
+            <input type="number" id="comp-facings" min="0" placeholder="Count">
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label>Shelf / Display Action Taken</label>
+          <textarea id="shelf-action" placeholder="Describe any shelf improvements made during the promotion (re-stocking, signage placed, facing adjustments, etc.)"></textarea>
+        </div>
+      </div>
+    </div>
 
-          <button type="submit" class="btn-primary">
-            <i class="fas fa-save"></i> Save Customer
-          </button>
-        </form>
+    <!-- §8 — CONSUMER FEEDBACK -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">8</div>
+        <div>
+          <div class="fs-title">Consumer Feedback & Market Intelligence</div>
+          <div class="fs-desc">Record real-time consumer and trade insights</div>
+        </div>
+        <div class="fs-icon">💬</div>
+      </div>
+      <div class="fs-body">
+        <div class="fg fg-2">
+          <div class="field">
+            <label>Consumer Sentiment</label>
+            <select id="consumer-sentiment">
+              <option>⭐⭐⭐⭐⭐ Very Positive</option>
+              <option>⭐⭐⭐⭐ Positive</option>
+              <option>⭐⭐⭐ Neutral</option>
+              <option>⭐⭐ Negative</option>
+              <option>⭐ Very Negative</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Most Requested Product</label>
+            <input type="text" id="most-requested" placeholder="Which Pings SKU did consumers ask for most?">
+          </div>
+        </div>
+        <div class="fg fg-2" style="margin-top:14px">
+          <div class="field">
+            <label>Most Common Objection / Feedback</label>
+            <textarea id="consumer-objection" placeholder="What were the main concerns or objections raised by consumers?"></textarea>
+          </div>
+          <div class="field">
+            <label>Product / Price Feedback</label>
+            <textarea id="price-feedback" placeholder="What did consumers say about product quality, size, or pricing?"></textarea>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label>Notable Consumer Quote / Observation</label>
+          <textarea id="consumer-quote" placeholder="Record any standout consumer comment, question, or insight verbatim…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- §9 — PROMOTER FINDINGS -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">9</div>
+        <div>
+          <div class="fs-title">Promoter Findings & Field Intelligence</div>
+          <div class="fs-desc">Overall observations and operational notes from the promoter</div>
+        </div>
+        <div class="fs-icon">🔎</div>
+      </div>
+      <div class="fs-body">
+        <div class="fg fg-2">
+          <div class="field">
+            <label>Overall Promotion Rating</label>
+            <select id="promo-rating">
+              <option>⭐⭐⭐⭐⭐ Excellent</option>
+              <option>⭐⭐⭐⭐ Good</option>
+              <option>⭐⭐⭐ Fair</option>
+              <option>⭐⭐ Poor</option>
+              <option>⭐ Very Poor</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Key Win / Achievement</label>
+            <input type="text" id="key-win" placeholder="Single best outcome from this promotion">
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label>Key Challenges Encountered</label>
+          <textarea id="key-challenges" placeholder="What challenges were faced? (delivery issues, shelf space, staff cooperation, expired stock, etc.)"></textarea>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label>Detailed Findings & Observations</label>
+          <textarea id="detailed-findings" style="min-height:120px" placeholder="Full narrative of what happened during the promotion — include anything relevant to management: trade behaviour, store dynamics, pricing, distribution gaps, staff attitude, repeat customers, volume trends, etc."></textarea>
+        </div>
+        <div class="fg fg-2" style="margin-top:14px">
+          <div class="field">
+            <label>Issues Requiring Immediate Action</label>
+            <textarea id="immediate-issues" placeholder="Any issues that need to be escalated to management immediately (expired product, hostile trade, supply chain problems, etc.)"></textarea>
+          </div>
+          <div class="field">
+            <label>Promoter Recommendation to Management</label>
+            <textarea id="promoter-recommendation" placeholder="Based on your time in trade, what do you recommend Pings or AlcoBina do next at this account?"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §10 — SIGN-OFF -->
+    <div class="form-section">
+      <div class="fs-head">
+        <div class="fs-num">10</div>
+        <div>
+          <div class="fs-title">Sign-Off & Declaration</div>
+          <div class="fs-desc">Promoter check-out and submission</div>
+        </div>
+        <div class="fs-icon">✅</div>
+      </div>
+      <div class="fs-body">
+        <div class="fg fg-3">
+          <div class="field">
+            <label>Check-Out Timestamp</label>
+            <input type="text" id="checkout-time" readonly>
+          </div>
+          <div class="field">
+            <label>Total Hours on Site</label>
+            <input type="text" id="hours-on-site" readonly placeholder="Auto-calculated">
+          </div>
+          <div class="field">
+            <label>Promotion Status</label>
+            <select id="promo-status">
+              <option>Completed</option>
+              <option>Partially Completed</option>
+              <option>Interrupted — Will Continue</option>
+              <option>Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg fg-2" style="margin-top:14px">
+          <div class="field">
+            <label>Store Manager / Owner Sign-Off Name</label>
+            <input type="text" id="store-signoff-name" placeholder="Name of person authorising">
+          </div>
+          <div class="field">
+            <label>Any Promised Follow-Up by Pings / AlcoBina?</label>
+            <input type="text" id="followup-promise" placeholder="e.g. Delivery by Thursday, Reorder call Tuesday">
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label>Final Promoter Notes</label>
+          <textarea id="final-notes" placeholder="Anything else you want management to know about this visit?"></textarea>
+        </div>
+        <div class="info-box" style="margin-top:14px">
+          ✅ By submitting this form, I confirm that all information recorded is accurate to the best of my knowledge at the time of submission. Timestamp and GPS data will be auto-appended.
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="form-actions-bar" style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 0 20px">
+      <button class="btn btn-primary" onclick="checkOutAndSubmit()">✅ Check Out & Submit Report</button>
+      <button class="btn btn-outline" onclick="saveDraft()">💾 Save Draft</button>
+      <button class="btn btn-outline" onclick="window.print()">🖨 Print Form</button>
+      <button class="btn btn-outline" onclick="exportJSON()">⬇ Export JSON</button>
+    </div>
+
+  </div><!-- /page-form -->
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: DASHBOARD -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page" id="page-dashboard">
+    <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px">Management Dashboard</div>
+    <div style="font-size:13px;color:var(--gray3);margin-bottom:22px">Live overview of all AlcoBina × Pings promotion activity</div>
+
+    <!-- KPI Stats -->
+    <div class="dash-stats">
+      <div class="stat-card blue">
+        <div class="sc-icon">📋</div>
+        <div class="sc-val" id="kpi-submissions">1</div>
+        <div class="sc-label">Total Submissions</div>
+        <div class="sc-delta up" id="kpi-sub-delta">+1 today</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="sc-icon">👥</div>
+        <div class="sc-val" id="kpi-promoters">1</div>
+        <div class="sc-label">Active Promoters</div>
+        <div class="sc-delta up">In field today</div>
+      </div>
+      <div class="stat-card green">
+        <div class="sc-icon">📦</div>
+        <div class="sc-val" id="kpi-units">0</div>
+        <div class="sc-label">Total Units Sold</div>
+        <div class="sc-delta up" id="kpi-units-delta">Across all reports</div>
+      </div>
+      <div class="stat-card navy">
+        <div class="sc-icon">🏪</div>
+        <div class="sc-val" id="kpi-stores">0</div>
+        <div class="sc-label">Stores Activated</div>
+        <div class="sc-delta up">This period</div>
+      </div>
+      <div class="stat-card red">
+        <div class="sc-icon">🚨</div>
+        <div class="sc-val" id="kpi-issues">0</div>
+        <div class="sc-label">Issues Flagged</div>
+        <div class="sc-delta dn" id="kpi-issues-txt">Requires attention</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Units Sold by SKU <span>Across all reports</span></div>
+        <div class="bar-chart" id="sku-bar-chart">
+          <!-- populated by JS -->
+        </div>
+        <div id="sku-bar-labels" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Sell-Through by Product <span>% of opening sold</span></div>
+        <div class="donut-wrap" id="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 120 120" id="donut-svg">
+            <circle cx="60" cy="60" r="45" fill="none" stroke="#EEF1F8" stroke-width="18"/>
+            <text x="60" y="65" text-anchor="middle" font-size="14" font-weight="700" fill="#0B1E45">—</text>
+          </svg>
+          <div class="donut-legend" id="donut-legend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="reports-table-wrap">
+      <div class="rt-head">
+        <h3>Recent Promotion Reports</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="showPage('reports')">View All</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="rt" id="dash-recent-table">
+          <thead>
+            <tr>
+              <th>Form ID</th><th>Promoter</th><th>Store</th>
+              <th>Parish</th><th>Date</th><th>Units Sold</th>
+              <th>Sell-Through</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="dash-tbody">
+            <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray3)">No submissions yet. Complete a promotion form to see data here.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: ANALYTICS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page" id="page-analytics">
+    <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px">Analytics</div>
+    <div style="font-size:13px;color:var(--gray3);margin-bottom:22px">Deep performance metrics across all promotion activities</div>
 
-  <!-- Search Transactions Modal -->
-  <div id="searchTransactionsModal" class="modal">
-    <div class="modal-content" style="max-width: 900px;">
-      <div class="modal-header">
-        <h2><i class="fas fa-search"></i> Search Transactions</h2>
-        <button class="modal-close" onclick="closeSearchTransactions()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <!-- Search Box -->
-        <div class="search-box" style="margin-bottom: 20px;">
-          <input type="text" id="transactionSearchInput" placeholder="🔍 Search by Transaction ID, Customer, Item..." onkeyup="filterTransactions()">
+    <div class="analytics-grid" id="analytics-grid">
+      <!-- SKU Performance Card -->
+      <div class="perf-card">
+        <div class="perf-title">📦 SKU Performance</div>
+        <div id="sku-perf-rows">
+          <div style="color:var(--gray3);font-size:13px">Submit a form to see SKU analytics</div>
         </div>
-
-        <!-- Results -->
-        <div id="transactionResults" style="max-height: 500px; overflow-y: auto;"></div>
+      </div>
+      <!-- Sell-Through Card -->
+      <div class="perf-card">
+        <div class="perf-title">📊 Sell-Through Rates</div>
+        <div id="sellthru-rows">
+          <div style="color:var(--gray3);font-size:13px">Submit a form to see sell-through data</div>
+        </div>
+      </div>
+      <!-- Competition Intel -->
+      <div class="perf-card">
+        <div class="perf-title">🔍 Competition Intel Summary</div>
+        <div id="comp-intel-rows">
+          <div style="color:var(--gray3);font-size:13px">Log competitor activity to see summary</div>
+        </div>
+      </div>
+      <!-- Parish Coverage -->
+      <div class="perf-card">
+        <div class="perf-title">📍 Parish Coverage</div>
+        <div id="parish-rows">
+          <div style="color:var(--gray3);font-size:13px">Submissions needed to see parish data</div>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- Bulk Upload Customer Modal -->
-  <div id="bulkUploadModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="fas fa-file-upload"></i> Bulk Upload Customers</h2>
-        <button class="modal-close" onclick="closeBulkUploadModal()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <!-- Instructions -->
-        <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-          <h3 style="margin-top: 0; color: #1976d2;"><i class="fas fa-info-circle"></i> Excel Format Required</h3>
-          <p style="margin: 10px 0;"><strong>Your Excel file must have these column headers (exact spelling):</strong></p>
-          <div style="background: white; padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0;">
-            customer_name | customer_type | phone | email | parish | address | credit_limit | notes
-          </div>
-          <p style="margin: 10px 0;"><strong>Example row:</strong></p>
-          <div style="background: white; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;">
-            John's Store | Retail | (876) 123-4567 | <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="13797c7b7d53767e727a7f3d707c7e">[email&#160;protected]</a> | Kingston | 123 Main St | 50000 | VIP Customer
-          </div>
-          <p style="margin: 10px 0; color: #666;"><i class="fas fa-lightbulb"></i> <strong>Tips:</strong></p>
-          <ul style="margin: 5px 0; padding-left: 20px; color: #666;">
-            <li>Customer numbers will be auto-generated (CUST-001, CUST-002, etc.)</li>
-            <li>Your client_id (UID-001) will be added automatically</li>
-            <li>Duplicate names will be skipped (no duplicates added)</li>
-            <li>Save your file as <strong>.csv</strong> or <strong>.xlsx</strong> format</li>
-          </ul>
-        </div>
 
-        <!-- File Upload -->
-        <div class="form-group">
-          <label><i class="fas fa-file-excel"></i> Select File (CSV or Excel)</label>
-          <input type="file" id="bulkUploadFile" accept=".csv,.xlsx,.xls" style="padding: 10px; border: 2px dashed var(--border-color); border-radius: 8px; width: 100%;">
-          <small style="color: #666; margin-top: 5px; display: block;">✅ Accepts: .csv, .xlsx, .xls</small>
-        </div>
-
-        <!-- Progress -->
-        <div id="uploadProgress" style="display: none; margin: 20px 0;">
-          <div style="background: #f5f5f5; border-radius: 10px; padding: 15px;">
-            <p id="uploadStatus" style="margin: 0 0 10px 0; font-weight: 600;"></p>
-            <div style="background: #e0e0e0; border-radius: 10px; height: 8px; overflow: hidden;">
-              <div id="uploadProgressBar" style="background: var(--primary-gradient); height: 100%; width: 0%; transition: width 0.3s;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Results -->
-        <div id="uploadResults" style="display: none; margin: 20px 0;"></div>
-
-        <!-- Buttons -->
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <button type="button" class="btn-primary" onclick="processBulkUpload()" style="flex: 1;">
-            <i class="fas fa-upload"></i> Upload & Process
-          </button>
-          <button type="button" class="btn-secondary" onclick="closeBulkUploadModal()" style="flex: 1;">
-            <i class="fas fa-times"></i> Cancel
-          </button>
-        </div>
+    <!-- Trend -->
+    <div class="chart-card" style="margin-bottom:20px">
+      <div class="chart-title">Promoter Activity Timeline <span>Last 7 submissions</span></div>
+      <div class="bar-chart" id="timeline-chart" style="height:120px">
+        <div style="display:flex;align-items:center;color:var(--gray3);font-size:13px;width:100%">No timeline data yet</div>
       </div>
     </div>
   </div>
 
-  <!-- Quick Edit Margin Modal -->
-  <div id="marginModal" class="modal">
-    <div class="modal-content" style="max-width: 400px;">
-      <div class="modal-header">
-        <h2><i class="fas fa-percentage"></i> Edit Margin</h2>
-        <button class="modal-close" onclick="closeMarginModal()"><i class="fas fa-times"></i></button>
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: LEADERBOARD -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page" id="page-leaderboard">
+    <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px">Promoter Performance</div>
+    <div style="font-size:13px;color:var(--gray3);margin-bottom:22px">Ranked by total units sold across all promotions</div>
+    <div class="lb-wrap" id="leaderboard-wrap">
+      <div style="padding:24px;text-align:center;color:var(--gray3);font-size:13px">No promoter data yet. Leaderboard populates automatically from form submissions.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: ALL REPORTS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page" id="page-reports">
+    <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px">All Promotion Reports</div>
+    <div style="font-size:13px;color:var(--gray3);margin-bottom:18px">Complete historical record of all AlcoBina × Pings promotion submissions</div>
+
+    <div class="filter-bar">
+      <label>Search<input type="text" placeholder="Name, store, ID…" id="filter-search" oninput="filterReports()"></label>
+      <label>Parish<select id="filter-parish" onchange="filterReports()">
+        <option value="">All parishes</option>
+        <option>Kingston & St. Andrew</option><option>St. Catherine</option>
+        <option>Clarendon</option><option>Manchester</option>
+        <option>St. Elizabeth</option><option>St. James</option>
+      </select></label>
+      <label>Status<select id="filter-status" onchange="filterReports()">
+        <option value="">All statuses</option>
+        <option>Completed</option><option>Partially Completed</option><option>Cancelled</option>
+      </select></label>
+      <label>Date From<input type="date" id="filter-date-from" onchange="filterReports()"></label>
+      <label>Date To<input type="date" id="filter-date-to" onchange="filterReports()"></label>
+      <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <div class="reports-table-wrap">
+      <div class="rt-head">
+        <h3>All Reports (<span id="report-count">0</span>)</h3>
+        <button class="btn btn-green btn-sm" onclick="exportAllCSV()">⬇ Export CSV</button>
       </div>
-      <div class="modal-body">
-        <form id="marginForm">
-          <input type="hidden" id="marginItemId">
-          
-          <div class="form-group">
-            <label>Item: <strong id="marginItemName"></strong></label>
-          </div>
-
-          <div class="form-group">
-            <label><i class="fas fa-percentage"></i> New Margin (%)</label>
-            <input type="number" id="marginValue" required min="0" max="100" step="0.1" placeholder="Enter new margin">
-          </div>
-
-          <button type="submit" class="btn-primary">
-            <i class="fas fa-check"></i> Update Margin
-          </button>
-        </form>
+      <div style="overflow-x:auto">
+        <table class="rt">
+          <thead>
+            <tr>
+              <th>Form ID</th><th>Promoter</th><th>Store</th>
+              <th>Parish</th><th>Start Date</th><th>Days</th>
+              <th>Units Sold</th><th>Sell-Through</th>
+              <th>Submitted</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="all-reports-tbody">
+            <tr><td colspan="11" style="text-align:center;padding:24px;color:var(--gray3)">No reports submitted yet.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-  <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbZVw5MVgrfFWAbTPByaUmKdbz0xPKofw",
-      authDomain: "alcobina.firebaseapp.com",
-      projectId: "alcobina",
-      storageBucket: "alcobina.firebasestorage.app",
-      messagingSenderId: "437821923842",
-      appId: "1:437821923842:web:ea90ea7c256659ab3cfd1b",
-      measurementId: "G-TCJLJRJ2B4"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // Configure Firestore settings BEFORE any operations (prevents warning)
-    db.settings({
-      cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
-      ignoreUndefinedProperties: true
-    });
-
-    // Global State
-    let currentUser = null;
-    let currentBusiness = null;
-    let currentBusinessName = null;
-    let currentUserUID = null;
-    let isMobile = window.innerWidth <= 768;
-    let priceListData = [];
-    let customersData = [];
-    let inventoryData = [];
-    let itemListData = [];
-
-    // Check if user is logged in
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        currentUser = user;
-        currentUserUID = user.uid;
-        console.log('✅ User signed in:', user.email, 'UID:', currentUserUID);
-        
-        // Load user's business data
-        try {
-          const userDoc = await db.collection('users').doc(user.uid).get();
-          if (!userDoc.exists) {
-            showError('User business data not found. Please contact support.');
-            await auth.signOut();
-            return;
-          }
-          
-          const userData = userDoc.data();
-          currentBusiness = userData.client_id || userData.business_id;
-          currentBusinessName = userData.business_name || userData.company_name || 'Your Business';
-          
-          console.log('✅ Business loaded:', currentBusiness, currentBusinessName);
-          
-          document.getElementById('welcome-username').textContent = user.email;
-          document.getElementById('business-name-display').textContent = currentBusinessName;
-          document.getElementById('client-id-display').textContent = currentBusiness;
-          document.getElementById('user-uid-display').textContent = currentUserUID;
-          
-          document.getElementById('loginPage').style.display = 'none';
-          document.getElementById('appContainer').style.display = 'flex';
-          
-          // Load data
-          await loadInventory();
-          await loadItemList();
-          await loadPriceList();
-          await loadCustomers();
-          
-          // Note: syncPriceListFromInventory() only runs when user clicks "Sync Costs" button
-          
-        } catch (error) {
-          console.error('❌ Error loading business data:', error);
-          showError('Failed to load business data: ' + error.message);
-          await auth.signOut();
-        }
-      } else {
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('appContainer').style.display = 'none';
-      }
-    });
-
-    // Login with better error handling
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const loginBtn = document.getElementById('loginBtn');
-      
-      // Disable button during login
-      loginBtn.disabled = true;
-      loginBtn.querySelector('span').textContent = 'Logging in...';
-      
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) {
-        console.error('Login error:', error);
-        let errorMessage = 'Login failed. Please try again.';
-        
-        // Provide user-friendly error messages
-        if (error.code === 'auth/user-not-found') {
-          errorMessage = 'No account found with this email address.';
-        } else if (error.code === 'auth/wrong-password') {
-          errorMessage = 'Incorrect password. Please try again.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Invalid email address format.';
-        } else if (error.code === 'auth/user-disabled') {
-          errorMessage = 'This account has been disabled.';
-        } else if (error.code === 'auth/too-many-requests') {
-          errorMessage = 'Too many failed attempts. Please try again later.';
-        } else if (error.code === 'auth/invalid-credential') {
-          errorMessage = 'Invalid email or password. Please check your credentials.';
-        } else {
-          errorMessage = error.message;
-        }
-        
-        showError(errorMessage);
-        
-        // Re-enable button
-        loginBtn.disabled = false;
-        loginBtn.querySelector('span').textContent = 'Login';
-      }
-    });
-
-    function showError(message) {
-      const errorDiv = document.getElementById('loginError');
-      const errorText = document.getElementById('loginErrorText');
-      errorText.textContent = message;
-      errorDiv.classList.add('show');
-      setTimeout(() => errorDiv.classList.remove('show'), 5000);
-    }
-
-    // Logout
-    async function logout() {
-      await auth.signOut();
-      location.reload();
-    }
-
-    // Navigation
-    function showWelcome() {
-      hideAllSections();
-      document.getElementById('welcome-section').style.display = 'flex';
-      setActiveMenu(0);
-    }
-
-    function showInventory() {
-      hideAllSections();
-      document.getElementById('inventory-section').style.display = 'block';
-      setActiveMenu(1);
-    }
-
-    function showPriceList() {
-      hideAllSections();
-      document.getElementById('price-list-section').style.display = 'block';
-      setActiveMenu(3);
-    }
-
-    function showCustomers() {
-      hideAllSections();
-      document.getElementById('customers-section').style.display = 'block';
-      setActiveMenu(5);
-    }
-
-    function showItemLookup() {
-      hideAllSections();
-      document.getElementById('item-lookup-section').style.display = 'block';
-      setActiveMenu(6);
-      loadItemLookup();
-    }
-
-    function showPOS() {
-      hideAllSections();
-      document.getElementById('pos-section').style.display = 'block';
-      setActiveMenu(3);
-      initializePOS();
-    }
-
-    function showComingSoon(feature, icon) {
-      hideAllSections();
-      document.getElementById('coming-soon-title').textContent = feature;
-      document.getElementById('coming-soon-text').textContent = `${feature} is coming soon. Stay tuned!`;
-      document.getElementById('coming-soon-icon').className = `fas fa-${icon}`;
-      document.getElementById('coming-soon-section').style.display = 'block';
-    }
-
-    function hideAllSections() {
-      document.getElementById('welcome-section').style.display = 'none';
-      document.getElementById('inventory-section').style.display = 'none';
-      document.getElementById('pos-section').style.display = 'none';
-      document.getElementById('price-list-section').style.display = 'none';
-      document.getElementById('customers-section').style.display = 'none';
-      document.getElementById('item-lookup-section').style.display = 'none';
-      document.getElementById('coming-soon-section').style.display = 'none';
-    }
-
-    function setActiveMenu(index) {
-      const menuItems = document.querySelectorAll('.menu-item');
-      menuItems.forEach((item, i) => {
-        if (i === index) {
-          item.classList.add('active');
-        } else {
-          item.classList.remove('active');
-        }
-      });
-      if (isMobile) {
-        document.getElementById('sidebar').classList.remove('show');
-      }
-    }
-
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('show');
-    }
-
-    // ==================== INVENTORY HISTORY ====================
-    
-    // Mode switching for inventory entry
-    function setInventoryMode(mode) {
-      document.getElementById('inventoryMode').value = mode;
-      
-      const btnNew = document.getElementById('btnNewItem');
-      const btnExisting = document.getElementById('btnExistingItem');
-      const searchSection = document.getElementById('existingItemSearch');
-      const searchResults = document.getElementById('searchResults');
-      
-      if (mode === 'new') {
-        btnNew.classList.add('active');
-        btnExisting.classList.remove('active');
-        searchSection.style.display = 'none';
-        searchResults.style.display = 'none';
-        
-        // Enable all fields
-        enableAllInventoryFields();
-        
-        // Clear form
-        document.getElementById('inventoryForm').reset();
-        document.getElementById('inventoryDocId').value = '';
-        
-        // Set current date
-        const now = new Date();
-        const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-        document.getElementById('inventoryPostingDate').value = localDateTime;
-        
-      } else {
-        btnNew.classList.remove('active');
-        btnExisting.classList.add('active');
-        searchSection.style.display = 'block';
-        
-        // Clear form
-        document.getElementById('inventoryForm').reset();
-        document.getElementById('inventoryDocId').value = '';
-        
-        // Show all unique items immediately
-        showAllUniqueItems();
-      }
-    }
-    
-    function enableAllInventoryFields() {
-      const fields = [
-        'inventoryItemNumber',
-        'inventoryItemName',
-        'inventoryBarcode',
-        'inventoryDescription',
-        'inventoryCategory',
-        'inventoryUnitOfMeasure',
-        'inventoryVendor'
-      ];
-      
-      fields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        field.readOnly = false;
-        field.disabled = false;
-        field.classList.remove('readonly-field');
-      });
-    }
-    
-    function disableInventoryFields() {
-      const fields = [
-        'inventoryItemNumber',
-        'inventoryItemName',
-        'inventoryBarcode',
-        'inventoryDescription',
-        'inventoryCategory',
-        'inventoryUnitOfMeasure',
-        'inventoryVendor'
-      ];
-      
-      fields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        field.readOnly = true;
-        field.classList.add('readonly-field');
-      });
-    }
-    
-    function searchExistingInventory() {
-      const searchTerm = document.getElementById('inventorySearchBox').value.toLowerCase().trim();
-      const searchResults = document.getElementById('searchResults');
-      
-      console.log('🔍 Search term:', searchTerm);
-      
-      if (itemListData.length === 0) {
-        searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-gray);"><i class="fas fa-exclamation-triangle"></i><br>Item List not loaded yet. Please wait...</div>';
-        searchResults.style.display = 'block';
-        return;
-      }
-      
-      // If search is empty, show all unique items
-      if (searchTerm.length === 0) {
-        showAllUniqueItems();
-        return;
-      }
-      
-      // If search term is less than 2 characters, still show all items
-      if (searchTerm.length < 2) {
-        showAllUniqueItems();
-        return;
-      }
-      
-      console.log('📊 itemListData length:', itemListData.length);
-      console.log('📋 itemListData:', itemListData);
-      
-      
-      // Filter from item_list (master item catalog)
-      const filtered = itemListData.filter(item => {
-        const matchName = item.item_name && item.item_name.toLowerCase().includes(searchTerm);
-        const matchNumber = item.item_number && item.item_number.toLowerCase().includes(searchTerm);
-        const matchDesc = item.description && item.description.toLowerCase().includes(searchTerm);
-        const matchBarcode = (item.Barcode || item.barcode || '').toLowerCase().includes(searchTerm);
-        return matchName || matchNumber || matchDesc || matchBarcode;
-      });
-      
-      console.log('✅ Filtered results:', filtered.length, filtered);
-      
-      if (filtered.length === 0) {
-        searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-gray);">No items found matching "' + searchTerm + '"</div>';
-        searchResults.style.display = 'block';
-        return;
-      }
-      
-      // Render search results from item_list with header
-      let html = '<div style="padding: 8px; background: var(--primary-gradient); color: white; font-weight: 600; border-radius: var(--radius) var(--radius) 0 0;"><i class="fas fa-search"></i> Search Results (' + filtered.length + ')</div>';
-      filtered.forEach(item => {
-        html += `
-          <div class="search-result-item" onclick='selectExistingItem(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
-            <strong>${item.item_name}</strong>
-            <small>Item #: ${item.item_number} | Barcode: ${item.Barcode || item.barcode || 'N/A'} | Category: ${item.category || item.Category || 'N/A'} | Description: ${item.description || 'N/A'}</small>
-          </div>
-        `;
-      });
-      
-      searchResults.innerHTML = html;
-      searchResults.style.display = 'block';
-    }
-    function showAllUniqueItems() {
-      const searchResults = document.getElementById('searchResults');
-      
-      console.log('📋 Showing all unique items from Item_list');
-      
-      if (itemListData.length === 0) {
-        searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-gray);"><i class="fas fa-exclamation-triangle"></i><br>Item List not loaded yet. Please wait...</div>';
-        searchResults.style.display = 'block';
-        return;
-      }
-      
-      // Get unique items from itemListData (master Item_list)
-      const uniqueItems = [];
-      const seenItemNumbers = new Set();
-      
-      itemListData.forEach(item => {
-        if (!seenItemNumbers.has(item.item_number)) {
-          seenItemNumbers.add(item.item_number);
-          uniqueItems.push(item);
-        }
-      });
-      
-      console.log('✅ Total unique items:', uniqueItems.length);
-      
-      if (uniqueItems.length === 0) {
-        searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-gray);">No items found in Item List</div>';
-        searchResults.style.display = 'block';
-        return;
-      }
-      
-      // Render all unique items
-      let html = '<div style="padding: 8px; background: var(--primary-gradient); color: white; font-weight: 600; border-radius: var(--radius) var(--radius) 0 0;"><i class="fas fa-list"></i> All Unique Items (' + uniqueItems.length + ')</div>';
-      
-      uniqueItems.forEach(item => {
-        html += `
-          <div class="search-result-item" onclick='selectExistingItem(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
-            <strong>${item.item_name}</strong>
-            <small>Item #: ${item.item_number} | Barcode: ${item.Barcode || item.barcode || 'N/A'} | Category: ${item.category || item.Category || 'N/A'}</small>
-          </div>
-        `;
-      });
-      
-      searchResults.innerHTML = html;
-      searchResults.style.display = 'block';
-    }
-    
-    function selectExistingItem(item) {
-      // Hide search results
-      document.getElementById('searchResults').style.display = 'none';
-      document.getElementById('inventorySearchBox').value = item.item_name;
-      
-      // Fill form with item data from item_list
-      document.getElementById('inventoryItemNumber').value = item.item_number;
-      document.getElementById('inventoryItemName').value = item.item_name;
-      
-      // Map barcode from item_list (if exists) or leave empty
-      document.getElementById('inventoryBarcode').value = item.Barcode || item.barcode || '';
-      
-      // Map description from item_list
-      document.getElementById('inventoryDescription').value = item.description || item.Description || '';
-      
-      // Map category (handle both lowercase and uppercase)
-      const category = item.category || item.Category || '';
-      // Capitalize first letter to match dropdown options
-      const categoryFormatted = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
-      document.getElementById('inventoryCategory').value = categoryFormatted;
-      
-      // Map unit_of_measure from item_list
-      document.getElementById('inventoryUnitOfMeasure').value = item.unit_of_measure || '';
-      
-      // Map vendor (if exists in Item_list)
-      document.getElementById('inventoryVendor').value = item.Vendor || item.vendor || '';
-      
-      // Make read-only fields uneditable
-      disableInventoryFields();
-      
-      // Pre-fill unit cost from item_list (editable)
-      document.getElementById('inventoryUnitCost').value = item.unit_cost || 0;
-      
-      // Clear quantity (user will enter current stock)
-      document.getElementById('inventoryQuantity').value = '';
-      
-      // Set current date
-      const now = new Date();
-      const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-      document.getElementById('inventoryPostingDate').value = localDateTime;
-      
-      // Clear doc ID so it creates a new entry
-      document.getElementById('inventoryDocId').value = '';
-    }
-    
-    async function loadInventory() {
-      if (!currentBusiness) {
-        console.error('❌ No currentBusiness set');
-        return;
-      }
-
-      console.log('🔍 Loading inventory for client_id:', currentBusiness);
-
-      try {
-        const snapshot = await db.collection('inventory_history')
-          .where('client_id', '==', currentBusiness)
-          .get();
-
-        console.log('📊 Found', snapshot.size, 'inventory entries');
-
-        inventoryData = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          inventoryData.push({
-            id: doc.id,
-            ...data
-          });
-        });
-
-        // Sort by posting_date descending (most recent first)
-        inventoryData.sort((a, b) => {
-          const dateA = a.posting_date ? a.posting_date.toDate() : new Date(0);
-          const dateB = b.posting_date ? b.posting_date.toDate() : new Date(0);
-          return dateB - dateA;
-        });
-
-        renderInventory(inventoryData);
-
-      } catch (error) {
-        console.error('❌ Error loading inventory:', error);
-        document.getElementById('inventoryContainer').innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Error Loading Inventory</h3>
-            <p>Error: ${error.message}</p>
-            <button class="btn-primary" onclick="loadInventory()"><i class="fas fa-sync"></i> Retry</button>
-          </div>
-        `;
-      }
-    }
-
-
-    async function loadItemList() {
-      if (!currentBusiness) {
-        console.error('❌ No currentBusiness set');
-        return;
-      }
-
-      console.log('🔍 Loading item_list for client_id:', currentBusiness);
-
-      try {
-        const snapshot = await db.collection('item_list')
-          .where('client_id', '==', currentBusiness)
-          .get();
-
-        console.log('📊 Found', snapshot.size, 'items in item_list');
-
-        itemListData = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          itemListData.push({
-            id: doc.id,
-            ...data
-          });
-        });
-
-        itemListData.sort((a, b) => {
-          const nameA = (a.item_name || '').toLowerCase();
-          const nameB = (b.item_name || '').toLowerCase();
-          return nameA.localeCompare(nameB);
-        });
-
-        console.log('✅ item_list loaded:', itemListData.length, 'items');
-
-      } catch (error) {
-        console.error('❌ Error loading Item_list:', error);
-      }
-    }
-
-    function renderInventory(data) {
-      const container = document.getElementById('inventoryContainer');
-
-      if (data.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-boxes"></i>
-            <h3>No Inventory Entries Found</h3>
-            <p>Start by adding your first inventory entry</p>
-            <button class="btn-primary" onclick="openAddInventoryModal()"><i class="fas fa-plus"></i> Add First Entry</button>
-          </div>
-        `;
-        return;
-      }
-
-      let tableHTML = `
-        <div class="data-table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ITEM NUMBER</th>
-                <th>ITEM NAME</th>
-                <th>BARCODE</th>
-                <th>CATEGORY</th>
-                <th>QUANTITY</th>
-                <th>UNIT COST</th>
-                <th>UNIT</th>
-                <th>VENDOR</th>
-                <th>POSTING DATE</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-
-      data.forEach(item => {
-        const postingDate = item.posting_date ? item.posting_date.toDate().toLocaleDateString() : 'N/A';
-        const unitCost = parseFloat(item.unit_cost) || 0;
-        
-        tableHTML += `
-          <tr>
-            <td><span class="badge badge-primary">${item.item_number}</span></td>
-            <td><strong>${item.item_name}</strong></td>
-            <td>${item.Barcode || 'N/A'}</td>
-            <td><span class="badge badge-info">${item.Category}</span></td>
-            <td><span class="badge badge-success">${item.Quantity}</span></td>
-            <td>$${unitCost.toFixed(2)}</td>
-            <td>${item.unit_of_measure}</td>
-            <td>${item.Vendor}</td>
-            <td>${postingDate}</td>
-            <td>
-              <div class="table-actions">
-                <button class="btn-edit-table" onclick='editInventory(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn-delete-table" onclick="deleteInventory('${item.id}', '${item.item_name}')">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-
-      tableHTML += `
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      container.innerHTML = tableHTML;
-    }
-
-    function filterInventory() {
-      const searchTerm = document.getElementById('inventorySearchInput').value.toLowerCase();
-      
-      const filtered = inventoryData.filter(item => 
-        item.item_name.toLowerCase().includes(searchTerm) ||
-        (item.item_number && item.item_number.toLowerCase().includes(searchTerm)) ||
-        (item.Barcode && item.Barcode.toLowerCase().includes(searchTerm)) ||
-        (item.Category && item.Category.toLowerCase().includes(searchTerm)) ||
-        (item.Vendor && item.Vendor.toLowerCase().includes(searchTerm)) ||
-        (item.Description && item.Description.toLowerCase().includes(searchTerm))
-      );
-
-      renderInventory(filtered);
-    }
-
-    function openAddInventoryModal() {
-      document.getElementById('inventoryModalTitle').innerHTML = '<i class="fas fa-box"></i> Add Inventory Entry';
-      document.getElementById('inventoryForm').reset();
-      document.getElementById('inventoryDocId').value = '';
-      
-      // Show mode selection
-      document.getElementById('inventoryModeSelection').style.display = 'block';
-      
-      // Reset to "New Item" mode by default
-      setInventoryMode('new');
-      
-      document.getElementById('inventoryModal').classList.add('active');
-    }
-
-    function editInventory(item) {
-      document.getElementById('inventoryModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Inventory Entry';
-      document.getElementById('inventoryDocId').value = item.id;
-      
-      // Hide mode selection when editing existing entry
-      document.getElementById('inventoryModeSelection').style.display = 'none';
-      document.getElementById('existingItemSearch').style.display = 'none';
-      
-      // Enable all fields for editing
-      enableAllInventoryFields();
-      
-      document.getElementById('inventoryItemNumber').value = item.item_number;
-      document.getElementById('inventoryItemName').value = item.item_name;
-      document.getElementById('inventoryBarcode').value = item.Barcode || '';
-      document.getElementById('inventoryDescription').value = item.Description || '';
-      document.getElementById('inventoryCategory').value = item.Category || '';
-      document.getElementById('inventoryQuantity').value = item.Quantity || 0;
-      document.getElementById('inventoryUnitCost').value = item.unit_cost || 0;
-      document.getElementById('inventoryUnitOfMeasure').value = item.unit_of_measure || '';
-      document.getElementById('inventoryVendor').value = item.Vendor || '';
-      
-      // Convert Firebase timestamp to datetime-local format
-      if (item.posting_date) {
-        const date = item.posting_date.toDate();
-        const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-        document.getElementById('inventoryPostingDate').value = localDateTime;
-      }
-      
-      document.getElementById('inventoryModal').classList.add('active');
-    }
-
-    function closeInventoryModal() {
-      document.getElementById('inventoryModal').classList.remove('active');
-      document.getElementById('inventoryForm').reset();
-    }
-
-    document.getElementById('inventoryForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const docId = document.getElementById('inventoryDocId').value;
-      const itemNumber = document.getElementById('inventoryItemNumber').value;
-      const itemName = document.getElementById('inventoryItemName').value;
-      const barcode = document.getElementById('inventoryBarcode').value;
-      const description = document.getElementById('inventoryDescription').value;
-      const category = document.getElementById('inventoryCategory').value;
-      const quantity = parseInt(document.getElementById('inventoryQuantity').value);
-      const unitCost = parseFloat(document.getElementById('inventoryUnitCost').value);
-      const unitOfMeasure = document.getElementById('inventoryUnitOfMeasure').value;
-      const vendor = document.getElementById('inventoryVendor').value;
-      const postingDateStr = document.getElementById('inventoryPostingDate').value;
-      
-      // Convert datetime-local to Firebase Timestamp
-      const postingDate = firebase.firestore.Timestamp.fromDate(new Date(postingDateStr));
-
-      const inventoryData = {
-        client_id: currentBusiness,
-        item_number: itemNumber,
-        item_name: itemName,
-        Barcode: barcode,
-        Description: description,
-        Category: category,
-        Quantity: quantity,
-        unit_cost: unitCost,
-        unit_of_measure: unitOfMeasure,
-        Vendor: vendor,
-        posting_date: postingDate
-      };
-
-      try {
-        if (docId) {
-          await db.collection('inventory_history').doc(docId).update(inventoryData);
-          console.log('✅ Inventory entry updated:', docId);
-        } else {
-          await db.collection('inventory_history').add(inventoryData);
-          console.log('✅ New inventory entry created');
-        }
-
-        closeInventoryModal();
-        await loadInventory();
-      } catch (error) {
-        console.error('❌ Error saving inventory:', error);
-        alert('Error: ' + error.message);
-      }
-    });
-
-    async function deleteInventory(id, itemName) {
-      if (confirm(`Delete inventory entry for "${itemName}"?`)) {
-        try {
-          await db.collection('inventory_history').doc(id).delete();
-          console.log('✅ Inventory entry deleted:', id);
-          await loadInventory();
-        } catch (error) {
-          console.error('❌ Error deleting inventory:', error);
-          alert('Error: ' + error.message);
-        }
-      }
-    }
-
-    // ==================== CUSTOMERS ====================
-    
-    async function loadCustomers() {
-      if (!currentBusiness) {
-        console.error('❌ No currentBusiness set');
-        return;
-      }
-
-      console.log('🔍 Loading customers for client_id:', currentBusiness);
-
-      try {
-        const snapshot = await db.collection('customers')
-          .where('client_id', '==', currentBusiness)
-          .get();
-
-        console.log('📊 Found', snapshot.size, 'customer documents');
-
-        customersData = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          customersData.push({
-            id: doc.id,
-            customer_number: data.customer_number || doc.id,
-            ...data
-          });
-        });
-
-        customersData.sort((a, b) => {
-          const nameA = (a.customer_name || '').toLowerCase();
-          const nameB = (b.customer_name || '').toLowerCase();
-          return nameA.localeCompare(nameB);
-        });
-
-        renderCustomers(customersData);
-
-      } catch (error) {
-        console.error('❌ Error loading customers:', error);
-        document.getElementById('customersContainer').innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Error Loading Customers</h3>
-            <p>Error: ${error.message}</p>
-            <button class="btn-primary" onclick="loadCustomers()"><i class="fas fa-sync"></i> Retry</button>
-          </div>
-        `;
-      }
-    }
-
-    function renderCustomers(data) {
-      const container = document.getElementById('customersContainer');
-
-      if (data.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-users"></i>
-            <h3>No Customers Found</h3>
-            <p>Start by adding your first customer</p>
-            <button class="btn-primary" onclick="openAddCustomerModal()"><i class="fas fa-user-plus"></i> Add First Customer</button>
-          </div>
-        `;
-        return;
-      }
-
-      let tableHTML = `
-        <div class="data-table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>CUSTOMER NUMBER</th>
-                <th>NAME</th>
-                <th>TYPE</th>
-                <th>EMAIL</th>
-                <th>PHONE</th>
-                <th>PARISH</th>
-                <th>ADDRESS</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-
-      data.forEach(customer => {
-        tableHTML += `
-          <tr>
-            <td><span class="badge badge-primary">${customer.customer_number || 'N/A'}</span></td>
-            <td><strong>${customer.customer_name}</strong></td>
-            <td>
-              ${customer.customer_type ? `<span class="badge badge-secondary">${customer.customer_type}</span>` : '-'}
-            </td>
-            <td>
-              ${customer.email ? `<a href="mailto:${customer.email}" style="color: #667eea;">${customer.email}</a>` : '-'}
-            </td>
-            <td>${customer.phone || '-'}</td>
-            <td>${customer.parish || '-'}</td>
-            <td>${customer.address || '-'}</td>
-            <td>
-              <div class="table-actions">
-                <button class="btn-edit-table" onclick='editCustomer(${JSON.stringify(customer).replace(/'/g, "&apos;")})'>
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn-delete-table" onclick="deleteCustomer('${customer.customer_number}', '${customer.customer_name}')">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-
-      tableHTML += `
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      container.innerHTML = tableHTML;
-    }
-
-    function filterCustomers() {
-      const searchTerm = document.getElementById('customerSearchInput').value.toLowerCase();
-      
-      const filtered = customersData.filter(customer => 
-        customer.customer_name.toLowerCase().includes(searchTerm) ||
-        (customer.customer_number && customer.customer_number.toLowerCase().includes(searchTerm)) ||
-        (customer.phone && customer.phone.toLowerCase().includes(searchTerm)) ||
-        (customer.email && customer.email.toLowerCase().includes(searchTerm)) ||
-        (customer.customer_type && customer.customer_type.toLowerCase().includes(searchTerm)) ||
-        (customer.parish && customer.parish.toLowerCase().includes(searchTerm))
-      );
-
-      renderCustomers(filtered);
-    }
-
-    async function openAddCustomerModal() {
-      document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-user"></i> Add Customer';
-      document.getElementById('customerForm').reset();
-      document.getElementById('customerDocId').value = '';
-      document.getElementById('customerNumber').value = '';
-      document.getElementById('customerModal').classList.add('active');
-    }
-
-    function editCustomer(customer) {
-      document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Customer';
-      document.getElementById('customerDocId').value = customer.customer_number;
-      document.getElementById('customerNumber').value = customer.customer_number;
-      document.getElementById('customerName').value = customer.customer_name;
-      document.getElementById('customerType').value = customer.customer_type || 'Retail';
-      document.getElementById('customerPhone').value = customer.phone || '';
-      document.getElementById('customerEmail').value = customer.email || '';
-      document.getElementById('customerParish').value = customer.parish || '';
-      document.getElementById('customerAddress').value = customer.address || '';
-      document.getElementById('customerCreditLimit').value = customer.credit_limit || '';
-      document.getElementById('customerNotes').value = customer.notes || '';
-      document.getElementById('customerModal').classList.add('active');
-    }
-
-    function closeCustomerModal() {
-      document.getElementById('customerModal').classList.remove('active');
-      document.getElementById('customerForm').reset();
-    }
-
-    document.getElementById('customerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const customerDocId = document.getElementById('customerDocId').value;
-      const customerName = document.getElementById('customerName').value;
-      const customerType = document.getElementById('customerType').value;
-      const customerPhone = document.getElementById('customerPhone').value;
-      const customerEmail = document.getElementById('customerEmail').value;
-      const customerParish = document.getElementById('customerParish').value;
-      const customerAddress = document.getElementById('customerAddress').value;
-      const customerCreditLimit = parseFloat(document.getElementById('customerCreditLimit').value) || 0;
-      const customerNotes = document.getElementById('customerNotes').value;
-
-      try {
-        if (customerDocId) {
-          await db.collection('customers').doc(customerDocId).update({
-            customer_name: customerName,
-            customer_type: customerType,
-            phone: customerPhone,
-            email: customerEmail,
-            parish: customerParish,
-            address: customerAddress,
-            credit_limit: customerCreditLimit,
-            notes: customerNotes,
-            updated_at: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          console.log('✅ Customer updated:', customerDocId);
-        } else {
-          await db.runTransaction(async (transaction) => {
-            const counterRef = db.collection('_metadata').doc(`${currentBusiness}_customer_counter`);
-            const counterDoc = await transaction.get(counterRef);
-            
-            let nextNumber = 1;
-            if (counterDoc.exists) {
-              nextNumber = (counterDoc.data().current || 0) + 1;
-            }
-
-            const customerNumber = `CUST-${String(nextNumber).padStart(3, '0')}`;
-            
-            const existingCustomer = await transaction.get(db.collection('customers').doc(customerNumber));
-            if (existingCustomer.exists) {
-              throw new Error(`Customer number ${customerNumber} already exists!`);
-            }
-
-            transaction.set(db.collection('customers').doc(customerNumber), {
-              client_id: currentBusiness,
-              client_name: currentBusinessName,
-              customer_number: customerNumber,
-              customer_name: customerName,
-              customer_type: customerType,
-              phone: customerPhone,
-              email: customerEmail,
-              parish: customerParish,
-              address: customerAddress,
-              credit_limit: customerCreditLimit,
-              notes: customerNotes,
-              created_at: firebase.firestore.FieldValue.serverTimestamp(),
-              updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            transaction.set(counterRef, { current: nextNumber }, { merge: true });
-
-            console.log('✅ New customer created with number:', customerNumber);
-          });
-        }
-
-        closeCustomerModal();
-        await loadCustomers();
-      } catch (error) {
-        console.error('❌ Error saving customer:', error);
-        alert('Error: ' + error.message);
-      }
-    });
-
-    async function deleteCustomer(customerNumber, customerName) {
-      if (confirm(`Are you sure you want to delete customer "${customerName}"?`)) {
-        try {
-          await db.collection('customers').doc(customerNumber).delete();
-          console.log('✅ Customer deleted:', customerNumber);
-          await loadCustomers();
-        } catch (error) {
-          console.error('❌ Error deleting customer:', error);
-          alert('Error deleting customer: ' + error.message);
-        }
-      }
-    }
-
-    // ==================== BULK UPLOAD ====================
-    
-    function showBulkUploadInstructions() {
-      document.getElementById('bulkUploadModal').classList.add('active');
-      // Reset form
-      document.getElementById('bulkUploadFile').value = '';
-      document.getElementById('uploadProgress').style.display = 'none';
-      document.getElementById('uploadResults').style.display = 'none';
-    }
-    
-    function closeBulkUploadModal() {
-      document.getElementById('bulkUploadModal').classList.remove('active');
-    }
-    
-    async function processBulkUpload() {
-      const fileInput = document.getElementById('bulkUploadFile');
-      const file = fileInput.files[0];
-      
-      if (!file) {
-        alert('⚠️ Please select an Excel file first');
-        return;
-      }
-      
-      const fileName = file.name.toLowerCase();
-      const validExtensions = ['.csv', '.xlsx', '.xls'];
-      const isValidFile = validExtensions.some(ext => fileName.endsWith(ext));
-      
-      if (!isValidFile) {
-        alert('⚠️ Please upload a CSV or Excel file (.csv, .xlsx, .xls)');
-        return;
-      }
-      
-      console.log('📁 Processing file:', file.name);
-      
-      // Show progress
-      document.getElementById('uploadProgress').style.display = 'block';
-      document.getElementById('uploadStatus').textContent = '📖 Reading file...';
-      document.getElementById('uploadProgressBar').style.width = '20%';
-      
-      try {
-        // Read Excel file using SheetJS (XLSX library)
-        const data = await readExcelFile(file);
-        
-        console.log('📊 Parsed data:', data.length, 'rows');
-        
-        // Update progress
-        document.getElementById('uploadStatus').textContent = '🔍 Validating data...';
-        document.getElementById('uploadProgressBar').style.width = '40%';
-        
-        // Validate and process
-        const results = await uploadCustomersToFirestore(data);
-        
-        // Show results
-        displayUploadResults(results);
-        
-        // Reload customers
-        await loadCustomers();
-        
-      } catch (error) {
-        console.error('❌ Upload error:', error);
-        alert('❌ Error: ' + error.message);
-        document.getElementById('uploadProgress').style.display = 'none';
-      }
-    }
-    
-    async function readExcelFile(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            
-            // Get first sheet
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            
-            // Convert to JSON
-            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-            
-            console.log('✅ File parsed:', jsonData.length, 'rows');
-            resolve(jsonData);
-          } catch (error) {
-            reject(new Error('Failed to read file: ' + error.message));
-          }
-        };
-        
-        reader.onerror = function() {
-          reject(new Error('Failed to load file'));
-        };
-        
-        reader.readAsArrayBuffer(file);
-      });
-    }
-    
-    async function uploadCustomersToFirestore(data) {
-      const results = {
-        total: data.length,
-        added: 0,
-        skipped: 0,
-        errors: 0,
-        details: []
-      };
-      
-      // Update progress
-      document.getElementById('uploadStatus').textContent = '🔄 Processing customers...';
-      document.getElementById('uploadProgressBar').style.width = '60%';
-      
-      // Get existing customers to check for duplicates
-      const existingSnapshot = await db.collection('customers')
-        .where('client_id', '==', currentBusiness)
-        .get();
-      
-      const existingNames = new Set();
-      existingSnapshot.forEach(doc => {
-        const name = doc.data().customer_name;
-        if (name) existingNames.add(name.toLowerCase().trim());
-      });
-      
-      console.log('📋 Existing customers:', existingNames.size);
-      
-      // Get next customer number
-      let customerCounter = existingSnapshot.size + 1;
-      
-      // Process each row
-      for (let i = 0; i < data.length; i++) {
-        const row = data[i];
-        
-        try {
-          // Validate required field
-          if (!row.customer_name || row.customer_name.trim() === '') {
-            results.skipped++;
-            results.details.push({
-              row: i + 2,
-              status: 'skipped',
-              reason: 'Missing customer_name'
-            });
-            continue;
-          }
-          
-          const customerName = row.customer_name.trim();
-          
-          // Check for duplicate
-          if (existingNames.has(customerName.toLowerCase())) {
-            results.skipped++;
-            results.details.push({
-              row: i + 2,
-              name: customerName,
-              status: 'skipped',
-              reason: 'Duplicate name'
-            });
-            console.log('⏭️ Skipping duplicate:', customerName);
-            continue;
-          }
-          
-          // Generate customer number
-          const customerNumber = `CUST-${String(customerCounter).padStart(3, '0')}`;
-          
-          // Create customer document
-          const customerData = {
-            customer_number: customerNumber,
-            customer_name: customerName,
-            customer_type: row.customer_type || 'Retail',
-            phone: row.phone || '',
-            email: row.email || '',
-            parish: row.parish || '',
-            address: row.address || '',
-            credit_limit: parseFloat(row.credit_limit) || 0,
-            notes: row.notes || '',
-            client_id: currentBusiness,
-            client_name: currentBusinessName || '',
-            created_at: firebase.firestore.FieldValue.serverTimestamp(),
-            updated_at: firebase.firestore.FieldValue.serverTimestamp()
-          };
-          
-          // Add to Firestore
-          await db.collection('customers').doc(customerNumber).set(customerData);
-          
-          // Track success
-          existingNames.add(customerName.toLowerCase());
-          customerCounter++;
-          results.added++;
-          results.details.push({
-            row: i + 2,
-            name: customerName,
-            number: customerNumber,
-            status: 'added'
-          });
-          
-          console.log('✅ Added:', customerNumber, customerName);
-          
-          // Update progress
-          const progress = 60 + (40 * (i + 1) / data.length);
-          document.getElementById('uploadProgressBar').style.width = progress + '%';
-          
-        } catch (error) {
-          results.errors++;
-          results.details.push({
-            row: i + 2,
-            name: row.customer_name || 'Unknown',
-            status: 'error',
-            reason: error.message
-          });
-          console.error('❌ Error adding customer:', error);
-        }
-      }
-      
-      console.log('📊 Upload complete:', results);
-      return results;
-    }
-    
-    function displayUploadResults(results) {
-      document.getElementById('uploadProgress').style.display = 'none';
-      
-      const resultsDiv = document.getElementById('uploadResults');
-      resultsDiv.style.display = 'block';
-      
-      let html = '<div style="background: white; border-radius: 10px; padding: 20px; box-shadow: var(--shadow);">';
-      
-      // Summary
-      html += '<h3 style="margin-top: 0; color: var(--primary-color);"><i class="fas fa-check-circle"></i> Upload Complete</h3>';
-      html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">';
-      
-      html += `<div style="text-align: center; padding: 15px; background: #e8f5e9; border-radius: 8px;">
-        <div style="font-size: 32px; font-weight: bold; color: #4caf50;">${results.added}</div>
-        <div style="color: #666;">✅ Added</div>
-      </div>`;
-      
-      html += `<div style="text-align: center; padding: 15px; background: #fff3e0; border-radius: 8px;">
-        <div style="font-size: 32px; font-weight: bold; color: #ff9800;">${results.skipped}</div>
-        <div style="color: #666;">⏭️ Skipped</div>
-      </div>`;
-      
-      html += `<div style="text-align: center; padding: 15px; background: #ffebee; border-radius: 8px;">
-        <div style="font-size: 32px; font-weight: bold; color: #f44336;">${results.errors}</div>
-        <div style="color: #666;">❌ Errors</div>
-      </div>`;
-      
-      html += '</div>';
-      
-      // Details
-      if (results.details.length > 0) {
-        html += '<details style="margin-top: 20px;"><summary style="cursor: pointer; font-weight: 600; padding: 10px; background: #f5f5f5; border-radius: 5px;">📋 View Details</summary>';
-        html += '<div style="margin-top: 10px; max-height: 300px; overflow-y: auto;">';
-        
-        results.details.forEach(detail => {
-          let icon = detail.status === 'added' ? '✅' : detail.status === 'skipped' ? '⏭️' : '❌';
-          let color = detail.status === 'added' ? '#4caf50' : detail.status === 'skipped' ? '#ff9800' : '#f44336';
-          
-          html += `<div style="padding: 8px; margin: 5px 0; border-left: 3px solid ${color}; background: #f9f9f9;">
-            ${icon} Row ${detail.row}: ${detail.name || 'Unknown'}
-            ${detail.number ? ` → ${detail.number}` : ''}
-            ${detail.reason ? ` (${detail.reason})` : ''}
-          </div>`;
-        });
-        
-        html += '</div></details>';
-      }
-      
-      html += '</div>';
-      
-      resultsDiv.innerHTML = html;
-    }
-    
-    // ==================== ITEM LOOKUP ====================
-    
-    async function loadItemLookup() {
-      if (!currentBusiness) {
-        console.error('❌ No currentBusiness set');
-        return;
-      }
-      
-      console.log('🔍 Loading item_list for lookup...');
-      
-      try {
-        const snapshot = await db.collection('item_list')
-          .where('client_id', '==', currentBusiness)
-          .orderBy('item_name')
-          .get();
-        
-        console.log('📦 Found', snapshot.size, 'items for lookup');
-        
-        const items = [];
-        snapshot.forEach(doc => {
-          items.push({ id: doc.id, ...doc.data() });
-        });
-        
-        renderItemLookup(items);
-      } catch (error) {
-        console.error('❌ Error loading items:', error);
-        document.getElementById('itemLookupContainer').innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p>Error loading items</p>
-            <small>${error.message}</small>
-          </div>
-        `;
-      }
-    }
-    
-    function renderItemLookup(items) {
-      const container = document.getElementById('itemLookupContainer');
-      
-      if (items.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-search"></i>
-            <p>No items found</p>
-            <small>Add items to see them here</small>
-          </div>
-        `;
-        return;
-      }
-      
-      // Table layout like customers
-      let html = `
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Item #</th>
-                <th>Item Name</th>
-                <th>Barcode</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Unit</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      
-      items.forEach(item => {
-        const itemNumber = item.item_number || 'N/A';
-        const itemName = item.item_name || 'Unknown';
-        const barcode = item.Barcode || item.barcode || 'N/A';
-        const category = item.category || 'N/A';
-        const description = item.description || '-';
-        const unit = item.unit_of_measure || 'N/A';
-        
-        html += `
-          <tr>
-            <td><strong>${itemNumber}</strong></td>
-            <td>${itemName}</td>
-            <td><code>${barcode}</code></td>
-            <td><span class="badge">${category}</span></td>
-            <td>${description}</td>
-            <td>${unit}</td>
-          </tr>
-        `;
-      });
-      
-      html += `
-            </tbody>
-          </table>
-        </div>
-      `;
-      
-      container.innerHTML = html;
-    }
-    
-    function filterItemLookup() {
-      const searchTerm = document.getElementById('itemLookupSearchInput').value.toLowerCase();
-      
-      const filtered = itemListData.filter(item => 
-        (item.item_name && item.item_name.toLowerCase().includes(searchTerm)) ||
-        (item.item_number && item.item_number.toLowerCase().includes(searchTerm)) ||
-        (item.Barcode && item.Barcode.toLowerCase().includes(searchTerm)) ||
-        (item.barcode && item.barcode.toLowerCase().includes(searchTerm)) ||
-        (item.description && item.description.toLowerCase().includes(searchTerm)) ||
-        (item.category && item.category.toLowerCase().includes(searchTerm))
-      );
-      
-      renderItemLookup(filtered);
-    }
-    // ==================== POS SYSTEM ====================
-    
-    let posCart = [];
-    let posCustomerData = {};
-    let posItemsList = [];
-    let currentTransactionId = null;
-    
-    async function initializePOS() {
-      console.log('🛒 Initializing POS...');
-      
-      // Load customers
-      await loadPOSCustomers();
-      
-      // Load items with prices
-      await loadPOSItems();
-      
-      // Clear cart
-      clearPOS();
-    }
-    
-    async function loadPOSCustomers() {
-      try {
-        const snapshot = await db.collection('customers')
-          .where('client_id', '==', currentBusiness)
-          .orderBy('customer_name')
-          .get();
-        
-        const select = document.getElementById('posCustomer');
-        select.innerHTML = '<option value="">Select Customer...</option>';
-        
-        snapshot.forEach(doc => {
-          const customer = doc.data();
-          const option = document.createElement('option');
-          option.value = customer.customer_number;
-          option.textContent = `${customer.customer_name} (${customer.customer_number})`;
-          option.dataset.customer = JSON.stringify(customer);
-          select.appendChild(option);
-        });
-        
-        console.log('✅ Loaded', snapshot.size, 'customers for POS');
-      } catch (error) {
-        console.error('❌ Error loading customers:', error);
-      }
-    }
-    
-    async function loadPOSItems() {
-      try {
-        // Load items from item_list
-        const itemSnapshot = await db.collection('item_list')
-          .where('client_id', '==', currentBusiness)
-          .orderBy('item_name')
-          .get();
-        
-        // Load prices from price_list
-        const priceSnapshot = await db.collection('price_list')
-          .where('client_id', '==', currentBusiness)
-          .get();
-        
-        const priceMap = {};
-        priceSnapshot.forEach(doc => {
-          const price = doc.data();
-          priceMap[price.item_number] = price;
-        });
-        
-        // Load current stock from inventory_history
-        const stockSnapshot = await db.collection('inventory_history')
-          .where('client_id', '==', currentBusiness)
-          .get();
-        
-        const stockMap = {};
-        stockSnapshot.forEach(doc => {
-          const inv = doc.data();
-          if (!stockMap[inv.item_number]) {
-            stockMap[inv.item_number] = 0;
-          }
-          stockMap[inv.item_number] += inv.Quantity || inv.quantity || 0;
-        });
-        
-        posItemsList = [];
-        const select = document.getElementById('posItemSelect');
-        select.innerHTML = '<option value="">Select item...</option>';
-        
-        itemSnapshot.forEach(doc => {
-          const item = doc.data();
-          const priceData = priceMap[item.item_number] || {};
-          const stock = stockMap[item.item_number] || 0;
-          
-          const itemData = {
-            ...item,
-            unit_cost: priceData.unit_cost || 0,
-            margin: priceData.margin || 0,
-            sell_price: priceData.unit_cost ? priceData.unit_cost * (1 + (priceData.margin || 0) / 100) : 0,
-            stock: stock
-          };
-          
-          posItemsList.push(itemData);
-          
-          const option = document.createElement('option');
-          option.value = item.item_number;
-          option.textContent = `${item.item_name} - $${itemData.sell_price.toFixed(2)} (Stock: ${stock})`;
-          option.dataset.item = JSON.stringify(itemData);
-          select.appendChild(option);
-        });
-        
-        console.log('✅ Loaded', posItemsList.length, 'items for POS');
-      } catch (error) {
-        console.error('❌ Error loading items:', error);
-      }
-    }
-    
-    function handleCustomerChange() {
-      const select = document.getElementById('posCustomer');
-      const option = select.options[select.selectedIndex];
-      
-      if (!option || !option.dataset.customer) {
-        document.getElementById('customerInfo').style.display = 'none';
-        document.getElementById('posRepId').value = '1';
-        posCustomerData = {};
-        return;
-      }
-      
-      posCustomerData = JSON.parse(option.dataset.customer);
-      
-      // Show customer info
-      document.getElementById('customerEmail').textContent = posCustomerData.email || 'Not provided';
-      document.getElementById('customerInfo').style.display = 'block';
-      
-      // Show credit limit for credit customers
-      if (posCustomerData.customer_type !== 'Cash') {
-        document.getElementById('creditLimitInfo').style.display = 'block';
-        document.getElementById('customerCreditLimit').textContent = (posCustomerData.credit_limit || 0).toFixed(2);
-      } else {
-        document.getElementById('creditLimitInfo').style.display = 'none';
-      }
-      
-      // Set rep ID
-      document.getElementById('posRepId').value = posCustomerData.rep_id || 1;
-      
-      // Update transaction type default
-      if (posCustomerData.customer_type === 'Cash') {
-        document.getElementById('posTransactionType').value = 'Cash';
-        handleTransactionTypeChange();
-      }
-      
-      updateReceiptPreview();
-    }
-    
-    function handleTransactionTypeChange() {
-      const type = document.getElementById('posTransactionType').value;
-      const termsSelect = document.getElementById('posPaymentTerms');
-      
-      if (type === 'Cash') {
-        termsSelect.value = '0';
-        termsSelect.disabled = true;
-      } else {
-        termsSelect.disabled = false;
-        termsSelect.value = '14';
-      }
-      
-      updateReceiptPreview();
-    }
-    
-    function handleItemSelect() {
-      const select = document.getElementById('posItemSelect');
-      const option = select.options[select.selectedIndex];
-      
-      if (!option || !option.dataset.item) {
-        document.getElementById('itemStock').style.display = 'none';
-        return;
-      }
-      
-      const item = JSON.parse(option.dataset.item);
-      
-      // Show stock
-      document.getElementById('itemStockQty').textContent = item.stock;
-      document.getElementById('itemStock').style.display = 'block';
-    }
-    
-    function addItemToSale() {
-      const select = document.getElementById('posItemSelect');
-      const option = select.options[select.selectedIndex];
-      
-      if (!option || !option.dataset.item) {
-        alert('⚠️ Please select an item');
-        return;
-      }
-      
-      const item = JSON.parse(option.dataset.item);
-      const quantity = parseInt(document.getElementById('posQuantity').value) || 1;
-      const discount = parseFloat(document.getElementById('posDiscount').value) || 0;
-      
-      // Validate quantity
-      if (quantity <= 0) {
-        alert('⚠️ Quantity must be greater than 0');
-        return;
-      }
-      
-      // Check stock
-      if (quantity > item.stock) {
-        alert(`⚠️ Insufficient stock! Only ${item.stock} available`);
-        return;
-      }
-      
-      // Calculate discounted price
-      const sellPrice = item.sell_price;
-      const discountedPrice = sellPrice * (1 - discount / 100);
-      
-      // Validate discount - cannot go below unit cost
-      if (discountedPrice < item.unit_cost) {
-        alert(`❌ Error: Discounted price ($${discountedPrice.toFixed(2)}) cannot be below unit cost ($${item.unit_cost.toFixed(2)})`);
-        return;
-      }
-      
-      // Add to cart
-      const cartItem = {
-        id: Date.now(),
-        item_number: item.item_number,
-        item_name: item.item_name,
-        category: item.category,
-        description: item.description,
-        quantity: quantity,
-        unit_cost: discountedPrice,
-        original_price: sellPrice,
-        discount: discount,
-        subtotal: discountedPrice * quantity
-      };
-      
-      posCart.push(cartItem);
-      
-      // Reset inputs
-      document.getElementById('posItemSelect').value = '';
-      document.getElementById('posQuantity').value = '1';
-      document.getElementById('posDiscount').value = '0';
-      document.getElementById('itemStock').style.display = 'none';
-      
-      renderCart();
-      updateReceiptPreview();
-      
-      console.log('✅ Added to cart:', cartItem);
-    }
-    
-    function renderCart() {
-      const container = document.getElementById('posCartItems');
-      
-      if (posCart.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 40px; color: #999;">
-            <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 10px;"></i>
-            <p>No items added yet</p>
-          </div>
-        `;
-        // Hide pre-sale actions when cart is empty
-        document.getElementById('preSaleActions').style.display = 'none';
-        return;
-      }
-      
-      // Show pre-sale actions when cart has items
-      document.getElementById('preSaleActions').style.display = 'flex';
-      
-      let html = '';
-      
-      posCart.forEach((item, index) => {
-        const discountText = item.discount > 0 ? 
-          `<span style="color: #f44336; font-size: 11px;">(${item.discount}% off)</span>` : '';
-        
-        html += `
-          <div style="background: #f9f9f9; border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 3px solid var(--primary-color);">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-              <div style="flex: 1;">
-                <strong>${item.item_name}</strong> ${discountText}<br>
-                <small style="color: #666;">${item.item_number} | ${item.category}</small>
-              </div>
-              <div style="text-align: right;">
-                <strong style="font-size: 16px; color: var(--primary-color);">$${item.subtotal.toFixed(2)}</strong>
-              </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
-              <span>${item.quantity} × $${item.unit_cost.toFixed(2)}</span>
-              <div>
-                <button onclick="editCartItem(${index})" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button onclick="voidCartItem(${index})" style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      
-      container.innerHTML = html;
-    }
-    
-    function editCartItem(index) {
-      const item = posCart[index];
-      
-      const newQty = prompt(`Edit quantity for ${item.item_name}:`, item.quantity);
-      if (newQty === null) return;
-      
-      const quantity = parseInt(newQty);
-      if (isNaN(quantity) || quantity <= 0) {
-        alert('❌ Invalid quantity');
-        return;
-      }
-      
-      // Check stock
-      const itemData = posItemsList.find(i => i.item_number === item.item_number);
-      if (quantity > itemData.stock) {
-        alert(`⚠️ Insufficient stock! Only ${itemData.stock} available`);
-        return;
-      }
-      
-      const newDiscount = prompt(`Edit discount % for ${item.item_name}:`, item.discount);
-      if (newDiscount === null) return;
-      
-      const discount = parseFloat(newDiscount);
-      if (isNaN(discount) || discount < 0 || discount > 100) {
-        alert('❌ Invalid discount');
-        return;
-      }
-      
-      // Recalculate
-      const discountedPrice = item.original_price * (1 - discount / 100);
-      
-      if (discountedPrice < itemData.unit_cost) {
-        alert(`❌ Error: Discounted price ($${discountedPrice.toFixed(2)}) cannot be below unit cost ($${itemData.unit_cost.toFixed(2)})`);
-        return;
-      }
-      
-      posCart[index].quantity = quantity;
-      posCart[index].discount = discount;
-      posCart[index].unit_cost = discountedPrice;
-      posCart[index].subtotal = discountedPrice * quantity;
-      
-      renderCart();
-      updateReceiptPreview();
-    }
-    
-    function voidCartItem(index) {
-      if (confirm(`Remove ${posCart[index].item_name} from cart?`)) {
-        posCart.splice(index, 1);
-        renderCart();
-        updateReceiptPreview();
-      }
-    }
-    
-    function voidAllItems() {
-      if (posCart.length === 0) {
-        alert('⚠️ Cart is already empty');
-        return;
-      }
-      
-      if (confirm('❌ Void all items in cart?')) {
-        posCart = [];
-        renderCart();
-        updateReceiptPreview();
-      }
-    }
-    
-    function updateReceiptPreview() {
-      const preview = document.getElementById('receiptPreview');
-      
-      if (posCart.length === 0 || !posCustomerData.customer_name) {
-        preview.innerHTML = `
-          <div style="text-align: center; color: #999; padding: 60px 20px;">
-            <i class="fas fa-receipt" style="font-size: 48px; margin-bottom: 10px;"></i>
-            <p>${!posCustomerData.customer_name ? 'Select customer and add items' : 'Add items to see receipt'}</p>
-          </div>
-        `;
-        document.getElementById('receiptActions').style.display = 'none';
-        return;
-      }
-      
-      // Calculate totals
-      const subtotal = posCart.reduce((sum, item) => sum + item.subtotal, 0);
-      const totalDiscount = posCart.reduce((sum, item) => {
-        const originalAmount = item.quantity * item.original_price;
-        const discountedAmount = item.subtotal;
-        return sum + (originalAmount - discountedAmount);
-      }, 0);
-      const gct = subtotal * 0.15; // 15% GCT
-      const total = subtotal + gct;
-      
-      // Check credit limit
-      const creditLimit = posCustomerData.credit_limit || 0;
-      const transactionType = document.getElementById('posTransactionType').value;
-      let creditWarning = '';
-      
-      if (transactionType === 'Credit' && total > creditLimit) {
-        const overage = total - creditLimit;
-        creditWarning = `
-          <div style="background: #ffebee; border: 2px solid #f44336; border-radius: 5px; padding: 10px; margin: 10px 0; text-align: center;">
-            <strong style="color: #f44336;">⚠️ CREDIT LIMIT EXCEEDED</strong><br>
-            <span style="font-size: 13px;">Over by $${overage.toFixed(2)}</span><br>
-            <small>Please adjust items or check outstanding bills</small>
-          </div>
-        `;
-        
-        document.getElementById('creditWarning').style.display = 'inline';
-        document.getElementById('creditWarning').textContent = `⚠️ OVER LIMIT BY $${overage.toFixed(2)}`;
-      } else {
-        document.getElementById('creditWarning').style.display = 'none';
-      }
-      
-      // Payment terms
-      const paymentTerms = document.getElementById('posPaymentTerms').value;
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + parseInt(paymentTerms));
-      
-      let termsText = '';
-      if (transactionType === 'Credit') {
-        termsText = `
-          <div style="text-align: center; margin: 10px 0; padding: 8px; background: #fff3e0; border-radius: 5px;">
-            <strong>Payment Terms: ${paymentTerms} days</strong><br>
-            <small>Due Date: ${dueDate.toLocaleDateString()}</small>
-          </div>
-        `;
-      }
-      
-      // Build receipt
-      let receipt = `
-        <div style="border-bottom: 2px dashed #333; padding-bottom: 10px; margin-bottom: 10px;">
-          <div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 5px;">
-            ${currentBusinessName || 'ALCOBINA POS'}
-          </div>
-          <div style="text-align: center; font-size: 11px; color: #666;">
-            ${new Date().toLocaleString()}
-          </div>
-        </div>
-        
-        <div style="margin-bottom: 10px; font-size: 12px;">
-          <strong>Customer:</strong> ${posCustomerData.customer_name}<br>
-          <strong>Customer #:</strong> ${posCustomerData.customer_number}<br>
-          ${posCustomerData.email ? `<strong>Email:</strong> ${posCustomerData.email}<br>` : ''}
-          <strong>Rep ID:</strong> ${document.getElementById('posRepId').value}<br>
-          <strong>Type:</strong> ${transactionType}
-        </div>
-        
-        ${termsText}
-        ${creditWarning}
-        
-        <div style="border-bottom: 2px dashed #333; margin: 10px 0;"></div>
-        
-        <div style="margin-bottom: 10px;">
-      `;
-      
-      // Items
-      posCart.forEach(item => {
-        const itemDiscountAmount = item.discount > 0 ? (item.quantity * item.original_price) - item.subtotal : 0;
-        receipt += `
-          <div style="margin-bottom: 8px;">
-            <div style="font-weight: bold;">${item.item_name}</div>
-            <div style="display: flex; justify-content: space-between; font-size: 11px;">
-              <span>${item.quantity} × $${item.unit_cost.toFixed(2)}</span>
-              <span>$${item.subtotal.toFixed(2)}</span>
-            </div>
-            ${item.discount > 0 ? `<div style="font-size: 10px; color: #f44336;">Discount: ${item.discount}% (-$${itemDiscountAmount.toFixed(2)})</div>` : ''}
-          </div>
-        `;
-      });
-      
-      receipt += `
-        </div>
-        
-        <div style="border-top: 2px dashed #333; padding-top: 10px; margin-top: 10px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-            <span>Subtotal:</span>
-            <span>$${subtotal.toFixed(2)}</span>
-          </div>
-          ${totalDiscount > 0 ? `
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #f44336;">
-            <span>Discount:</span>
-            <span>-$${totalDiscount.toFixed(2)}</span>
-          </div>
-          ` : ''}
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-            <span>GCT (15%):</span>
-            <span>$${gct.toFixed(2)}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 8px; padding-top: 8px; border-top: 2px solid #333;">
-            <span>TOTAL:</span>
-            <span>$${total.toFixed(2)}</span>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 15px; padding-top: 10px; border-top: 2px dashed #333; font-size: 11px; color: #666;">
-          Thank you for your business!
-        </div>
-      `;
-      
-      preview.innerHTML = receipt;
-      document.getElementById('receiptActions').style.display = 'none'; // Show after submit
-    }
-    
-    function clearPOS() {
-    function toggleSidebarCollapse() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('collapsed');
-      
-      // Save state to localStorage
-      const isCollapsed = sidebar.classList.contains('collapsed');
-      localStorage.setItem('sidebarCollapsed', isCollapsed);
-    }
-    
-    // Auto-collapse sidebar when menu item is clicked (on mobile/tablet)
-    function handleMenuClick(callback) {
-      // Execute the original function
-      callback();
-      
-      // Auto-collapse on smaller screens
-      if (window.innerWidth < 1024) {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.add('collapsed');
-      }
-    }
-    
-    // Restore sidebar state on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedState = localStorage.getItem('sidebarCollapsed');
-      if (savedState === 'true') {
-        document.getElementById('sidebar').classList.add('collapsed');
-      }
-    });
-    // Pre-sale actions: Quote, PDF, Email, Print
-    function showPreSaleActions() {
-      if (!posCustomerData.customer_number) {
-        alert('⚠️ Please select a customer');
-        return;
-      }
-      
-      if (posCart.length === 0) {
-        alert('⚠️ Please add items to cart');
-        return;
-      }
-      
-      const actions = `
-        Choose an action:
-        
-        1. Send Quote (Email - not a receipt, prices subject to change)
-        2. Complete Sale & Generate Receipt
-      `;
-      
-      // Show action buttons
-      document.getElementById('preSaleActions').style.display = 'flex';
-    }
-    
-    async function sendQuote() {
-      if (!posCustomerData.email) {
-        alert('⚠️ Customer email not available');
-        return;
-      }
-      
-      const subtotal = posCart.reduce((sum, item) => sum + item.subtotal, 0);
-      const gct = subtotal * 0.15;
-      const total = subtotal + gct;
-      
-      const quoteHTML = generateQuoteHTML(subtotal, gct, total);
-      
-      // In production, this would send via email service
-      const mailto = `mailto:${posCustomerData.email}?subject=Quote from ${currentBusinessName || 'ALCOBINA'}&body=Please find your quote attached.`;
-      
-      // For now, show quote in new window
-      const quoteWindow = window.open('', '_blank');
-      quoteWindow.document.write(quoteHTML);
-      quoteWindow.document.close();
-      
-      alert(`✅ Quote generated!\n\nOpening quote window...\nCustomer: ${posCustomerData.customer_name}\nEmail: ${posCustomerData.email}`);
-    }
-    
-    function generateQuoteHTML(subtotal, gct, total) {
-      const today = new Date().toLocaleDateString();
-      
-      let itemsHTML = '';
-      posCart.forEach(item => {
-        const discountAmount = item.discount || 0;
-        itemsHTML += `
-          <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.item_name}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${item.unit_cost.toFixed(2)}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${discountAmount.toFixed(2)}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${item.subtotal.toFixed(2)}</td>
-          </tr>
-        `;
-      });
-      
-      return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>QUOTATION</title>
-          <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
-            .watermark { 
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-45deg);
-              font-size: 120px;
-              font-weight: bold;
-              color: rgba(255, 0, 0, 0.1);
-              z-index: -1;
-              pointer-events: none;
-            }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #333; padding-bottom: 20px; }
-            .disclaimer { 
-              background: #fff3cd; 
-              border: 2px solid #ffc107; 
-              padding: 15px; 
-              margin: 20px 0; 
-              border-radius: 5px;
-              font-weight: bold;
-              color: #856404;
-            }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-            th { background: #333; color: white; padding: 10px; text-align: left; }
-            .totals { text-align: right; margin-top: 20px; font-size: 16px; }
-            .totals div { margin: 5px 0; }
-          </style>
-        </head>
-        <body>
-          <div class="watermark">QUOTATION</div>
-          
-          <div class="header">
-            <h1>QUOTATION</h1>
-            <h2>${currentBusinessName || 'ALCOBINA'}</h2>
-            <p>Date: ${today}</p>
-          </div>
-          
-          <div class="disclaimer">
-            ⚠️ THIS IS NOT A CASH RECEIPT
-            <br>
-            PRICES ARE SUBJECT TO CHANGE WITHOUT NOTICE
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <strong>Customer:</strong> ${posCustomerData.customer_name}<br>
-            <strong>Customer #:</strong> ${posCustomerData.customer_number}<br>
-            <strong>Email:</strong> ${posCustomerData.email || 'N/A'}
-          </div>
-          
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Unit Price</th>
-                <th style="text-align: right;">Discount</th>
-                <th style="text-align: right;">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${itemsHTML}
-            </tbody>
-          </table>
-          
-          <div class="totals">
-            <div><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</div>
-            <div><strong>GCT (15%):</strong> $${gct.toFixed(2)}</div>
-            <div style="font-size: 20px; margin-top: 10px; padding-top: 10px; border-top: 2px solid #333;">
-              <strong>TOTAL:</strong> $${total.toFixed(2)}
-            </div>
-          </div>
-          
-          <div style="margin-top: 40px; text-align: center; color: #666;">
-            <p>Thank you for your interest!</p>
-            <p style="font-size: 12px;">This is a quotation only. Final invoice will be issued upon purchase.</p>
-          </div>
-        </body>
-        </html>
-      `;
-    }
-    
-    function generateReceiptHTML(isCopy = false) {
-      const subtotal = posCart.reduce((sum, item) => sum + item.subtotal, 0);
-      const gct = subtotal * 0.15;
-      const total = subtotal + gct;
-      const today = new Date().toLocaleDateString();
-      const transactionType = document.getElementById('posTransactionType').value;
-      const paymentTerms = parseInt(document.getElementById('posPaymentTerms').value);
-      
-      let dueDate = '';
-      if (transactionType === 'Credit' && paymentTerms > 0) {
-        const due = new Date();
-        due.setDate(due.getDate() + paymentTerms);
-        dueDate = due.toLocaleDateString();
-      }
-      
-      let itemsHTML = '';
-      posCart.forEach(item => {
-        const discountAmount = item.discount || 0;
-        itemsHTML += `
-          <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.item_name}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${item.unit_cost.toFixed(2)}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${discountAmount.toFixed(2)}</td>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${item.subtotal.toFixed(2)}</td>
-          </tr>
-        `;
-      });
-      
-      const copyWatermark = isCopy ? '<div class="watermark">COPY</div>' : '';
-      
-      return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Receipt - ${currentTransactionId}</title>
-          <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
-            .watermark { 
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-45deg);
-              font-size: 150px;
-              font-weight: bold;
-              color: rgba(0, 0, 255, 0.1);
-              z-index: -1;
-              pointer-events: none;
-              letter-spacing: 20px;
-            }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #333; padding-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-            th { background: #333; color: white; padding: 10px; text-align: left; }
-            .totals { text-align: right; margin-top: 20px; font-size: 16px; }
-            .totals div { margin: 5px 0; }
-            @media print {
-              button { display: none; }
-            }
-          </style>
-        </head>
-        <body>
-          ${copyWatermark}
-          
-          <div class="header">
-            <h1>RECEIPT</h1>
-            <h2>${currentBusinessName || 'ALCOBINA'}</h2>
-            <p>Date: ${today}</p>
-            <p><strong>Transaction ID: ${currentTransactionId}</strong></p>
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <strong>Customer:</strong> ${posCustomerData.customer_name}<br>
-            <strong>Customer #:</strong> ${posCustomerData.customer_number}<br>
-            <strong>Type:</strong> ${transactionType}<br>
-            ${dueDate ? `<strong>Due Date:</strong> ${dueDate}<br>` : ''}
-            <strong>Rep ID:</strong> ${document.getElementById('posRepId').value}
-          </div>
-          
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Unit Price</th>
-                <th style="text-align: right;">Discount</th>
-                <th style="text-align: right;">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${itemsHTML}
-            </tbody>
-          </table>
-          
-          <div class="totals">
-            <div><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</div>
-            <div><strong>GCT (15%):</strong> $${gct.toFixed(2)}</div>
-            <div style="font-size: 20px; margin-top: 10px; padding-top: 10px; border-top: 2px solid #333;">
-              <strong>TOTAL:</strong> $${total.toFixed(2)}
-            </div>
-          </div>
-          
-          <div style="margin-top: 40px; text-align: center; color: #666;">
-            <p>Thank you for your business!</p>
-            <p style="font-size: 12px;">Powered by ALCOBINA</p>
-          </div>
-          
-          <div style="margin-top: 20px; text-align: center;">
-            <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
-              🖨️ Print Receipt
-            </button>
-          </div>
-        </body>
-        </html>
-      `;
-    }
-    
-    function generatePDFReceipt() {
-      const receiptWindow = window.open('', '_blank');
-      receiptWindow.document.write(generateReceiptHTML(true)); // true = show COPY watermark
-      receiptWindow.document.close();
-    }
-    
-    function emailReceiptCopy() {
-      if (!posCustomerData.email) {
-        alert('⚠️ Customer email not available');
-        return;
-      }
-      
-      // In production, this would send via email service
-      const receiptWindow = window.open('', '_blank');
-      receiptWindow.document.write(generateReceiptHTML(true)); // true = show COPY watermark
-      receiptWindow.document.close();
-      
-      alert(`✅ Receipt (COPY) opened for email!\n\nCustomer: ${posCustomerData.customer_name}\nEmail: ${posCustomerData.email}\n\nNote: Email integration requires server-side setup.`);
-    }
-    
-    function printReceipt() {
-      const receiptWindow = window.open('', '_blank');
-      receiptWindow.document.write(generateReceiptHTML(false)); // false = no watermark for first print
-      receiptWindow.document.close();
-      receiptWindow.onload = function() {
-        receiptWindow.print();
-      };
-    }
-      posCart = [];
-      posCustomerData = {};
-      currentTransactionId = null;
-      
-      document.getElementById('posCustomer').value = '';
-      document.getElementById('posRepId').value = '1';
-      document.getElementById('posTransactionType').value = 'Cash';
-      document.getElementById('posPaymentTerms').value = '0';
-      document.getElementById('posPaymentTerms').disabled = true;
-      document.getElementById('posItemSelect').value = '';
-      document.getElementById('posQuantity').value = '1';
-      document.getElementById('posDiscount').value = '0';
-      document.getElementById('customerInfo').style.display = 'none';
-      document.getElementById('itemStock').style.display = 'none';
-      
-      renderCart();
-      updateReceiptPreview();
-      
-      console.log('🔄 POS cleared');
-    }
-
-    
-    async function submitSale() {
-      // Validate
-      if (!posCustomerData.customer_number) {
-        alert('⚠️ Please select a customer');
-        return;
-      }
-      
-      if (posCart.length === 0) {
-        alert('⚠️ Please add items to cart');
-        return;
-      }
-      
-      const transactionType = document.getElementById('posTransactionType').value;
-      const subtotal = posCart.reduce((sum, item) => sum + item.subtotal, 0);
-      const gct = subtotal * 0.15;
-      const total = subtotal + gct;
-      
-      // Check credit limit
-      if (transactionType === 'Credit') {
-        const creditLimit = posCustomerData.credit_limit || 0;
-        if (total > creditLimit) {
-          const proceed = confirm(
-            `⚠️ WARNING: Total ($${total.toFixed(2)}) exceeds credit limit ($${creditLimit.toFixed(2)}).\n\n` +
-            `Consider adjusting items to stay under limit.\n\n` +
-            `Do you want to proceed anyway?`
-          );
-          if (!proceed) return;
-        }
-      }
-      
-      try {
-        console.log('💾 Submitting sale...');
-        
-        // Generate transaction ID
-        const txnSnapshot = await db.collection('pos_transactions')
-          .where('client_id', '==', currentBusiness)
-          .orderBy('created_date', 'desc')
-          .limit(1)
-          .get();
-        
-        let txnCounter = 1;
-        if (!txnSnapshot.empty) {
-          const lastTxn = txnSnapshot.docs[0].data();
-          if (lastTxn.transaction_id) {
-            const match = lastTxn.transaction_id.match(/INV-(\d+)/);
-            if (match) {
-              txnCounter = parseInt(match[1]) + 1;
-            }
-          }
-        }
-        
-        currentTransactionId = `INV-${String(txnCounter).padStart(4, '0')}`;
-        
-        // Save each line item as a transaction
-        const batch = db.batch();
-        const paymentTerms = parseInt(document.getElementById('posPaymentTerms').value);
-        
-        for (const item of posCart) {
-          const txnData = {
-            transaction_id: currentTransactionId,
-            transaction_type: transactionType,
-            transaction_action: 'Sale',
-            customer_number: posCustomerData.customer_number,
-            customer_name: posCustomerData.customer_name,
-            rep_id: parseInt(document.getElementById('posRepId').value),
-            item_number: item.item_number,
-            item_name: item.item_name,
-            category: item.category,
-            description: item.description,
-            quantity: item.quantity,
-            unit_cost: item.unit_cost,
-            discount: item.discount,
-            subtotal: item.subtotal,
-            gct: 15,
-            total: item.subtotal * 1.15,
-            payment_term: paymentTerms,
-            account_type: transactionType.toLowerCase(),
-            client_id: currentBusiness,
-            client_name: currentBusinessName || '',
-            created_date: firebase.firestore.FieldValue.serverTimestamp()
-          };
-          
-          const docRef = db.collection('pos_transactions').doc();
-          batch.set(docRef, txnData);
-        }
-        
-        await batch.commit();
-        
-        // ✅ DEDUCT FROM CREDIT LIMIT if Credit transaction
-        if (transactionType === 'Credit') {
-          const customerRef = db.collection('customers')
-            .where('client_id', '==', currentBusiness)
-            .where('customer_number', '==', posCustomerData.customer_number);
-          
-          const customerSnapshot = await customerRef.get();
-          if (!customerSnapshot.empty) {
-            const customerDoc = customerSnapshot.docs[0];
-            const currentCreditLimit = customerDoc.data().credit_limit || 0;
-            const newCreditLimit = currentCreditLimit - total;
-            
-            await customerDoc.ref.update({
-              credit_limit: newCreditLimit,
-              updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            console.log(`✅ Credit limit updated: ${currentCreditLimit} → ${newCreditLimit}`);
-          }
-        }
-        
-        console.log('✅ Sale submitted:', currentTransactionId);
-        
-        alert(`✅ Sale Complete!\n\nTransaction ID: ${currentTransactionId}\nTotal: $${total.toFixed(2)}`);
-        
-        // Auto-clear and reset for new sale
-        clearPOS();
-        
-      } catch (error) {
-        console.error('❌ Error submitting sale:', error);
-        alert('❌ Error: ' + error.message);
-      }
-    }
-    
-    function emailReceipt() {
-      if (!currentTransactionId) {
-        alert('⚠️ Please complete a sale first');
-        return;
-      }
-      
-      if (!posCustomerData.email) {
-        alert('⚠️ Customer email not available');
-        return;
-      }
-      
-      alert(`📧 Email functionality coming soon!\n\nWould send receipt for ${currentTransactionId} to:\n${posCustomerData.email}`);
-    }
-    
-    function downloadReceiptPDF() {
-      if (!currentTransactionId) {
-        alert('⚠️ Please complete a sale first');
-        return;
-      }
-      
-      alert(`📄 PDF download coming soon!\n\nTransaction: ${currentTransactionId}`);
-    }
-    
-    // Search Transactions
-    function openSearchTransactions() {
-      document.getElementById('searchTransactionsModal').classList.add('active');
-      loadAllTransactions();
-    }
-    
-    function closeSearchTransactions() {
-      document.getElementById('searchTransactionsModal').classList.remove('active');
-    }
-    
-    async function loadAllTransactions() {
-      try {
-        console.log('🔍 Loading transactions...');
-        
-        const snapshot = await db.collection('pos_transactions')
-          .where('client_id', '==', currentBusiness)
-          .orderBy('created_date', 'desc')
-          .limit(100)
-          .get();
-        
-        const transactions = [];
-        snapshot.forEach(doc => {
-          transactions.push({ id: doc.id, ...doc.data() });
-        });
-        
-        // Group by transaction_id
-        const grouped = {};
-        transactions.forEach(txn => {
-          if (!grouped[txn.transaction_id]) {
-            grouped[txn.transaction_id] = [];
-          }
-          grouped[txn.transaction_id].push(txn);
-        });
-        
-        renderTransactionResults(grouped);
-        
-      } catch (error) {
-        console.error('❌ Error loading transactions:', error);
-        document.getElementById('transactionResults').innerHTML = `
-          <div style="text-align: center; padding: 40px; color: #f44336;">
-            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 10px;"></i>
-            <p>Error loading transactions</p>
-            <small>${error.message}</small>
-          </div>
-        `;
-      }
-    }
-    
-    function renderTransactionResults(grouped) {
-      const container = document.getElementById('transactionResults');
-      
-      if (Object.keys(grouped).length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 40px; color: #999;">
-            <i class="fas fa-receipt" style="font-size: 48px; margin-bottom: 10px;"></i>
-            <p>No transactions found</p>
-          </div>
-        `;
-        return;
-      }
-      
-      let html = '';
-      
-      Object.keys(grouped).forEach(txnId => {
-        const items = grouped[txnId];
-        const first = items[0];
-        const total = items.reduce((sum, item) => sum + item.total, 0);
-        const isVoided = first.transaction_action === 'Void';
-        const isRefund = first.transaction_action === 'Refund';
-        
-        const statusBadge = isVoided ? 
-          '<span style="background: #f44336; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">VOID</span>' :
-          isRefund ?
-          '<span style="background: #ff9800; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">REFUND</span>' :
-          '<span style="background: #4caf50; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">SALE</span>';
-        
-        html += `
-          <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); border-left: 4px solid ${isVoided || isRefund ? '#f44336' : '#4caf50'};">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
-              <div>
-                <strong style="font-size: 16px;">${txnId}</strong> ${statusBadge}<br>
-                <small style="color: #666;">
-                  ${first.customer_name} (${first.customer_number}) | 
-                  ${first.created_date ? new Date(first.created_date.toDate()).toLocaleString() : 'N/A'}
-                </small>
-              </div>
-              <div style="text-align: right;">
-                <strong style="font-size: 18px; color: ${isVoided || isRefund ? '#f44336' : '#4caf50'};">
-                  ${isRefund ? '-' : ''}$${Math.abs(total).toFixed(2)}
-                </strong><br>
-                <small style="color: #666;">${first.transaction_type}</small>
-              </div>
-            </div>
-            
-            <details>
-              <summary style="cursor: pointer; color: var(--primary-color); font-size: 13px;">
-                <i class="fas fa-list"></i> ${items.length} item(s) - View Details
-              </summary>
-              <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
-                ${items.map(item => `
-                  <div style="padding: 5px 0; font-size: 13px;">
-                    ${item.item_name} - ${item.quantity} × $${item.unit_cost.toFixed(2)} = $${item.subtotal.toFixed(2)}
-                    ${item.discount > 0 ? `<span style="color: #f44336;">(${item.discount}% off)</span>` : ''}
-                  </div>
-                `).join('')}
-              </div>
-            </details>
-            
-            ${!isVoided && !isRefund ? `
-              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; display: flex; gap: 10px;">
-                <button onclick="voidTransaction('${txnId}')" style="flex: 1; background: #f44336; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">
-                  <i class="fas fa-ban"></i> Void
-                </button>
-                <button onclick="refundTransaction('${txnId}')" style="flex: 1; background: #ff9800; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">
-                  <i class="fas fa-undo"></i> Refund
-                </button>
-                <button onclick="viewReceiptPDF('${txnId}')" style="flex: 1; background: #2196f3; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">
-                  <i class="fas fa-file-pdf"></i> PDF
-                </button>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      });
-      
-      container.innerHTML = html;
-    }
-    
-    function filterTransactions() {
-      // Simple filter for now
-      const searchTerm = document.getElementById('transactionSearchInput').value.toLowerCase();
-      // In production, you'd filter the loaded transactions
-      console.log('Filtering by:', searchTerm);
-    }
-    
-    async function voidTransaction(txnId) {
-      if (!confirm(`❌ Void transaction ${txnId}?\n\nThis will mark all items as voided.`)) {
-        return;
-      }
-      
-      try {
-        console.log('🔄 Voiding transaction:', txnId);
-        
-        const snapshot = await db.collection('pos_transactions')
-          .where('transaction_id', '==', txnId)
-          .where('client_id', '==', currentBusiness)
-          .get();
-        
-        const batch = db.batch();
-        snapshot.forEach(doc => {
-          batch.update(doc.ref, {
-            transaction_action: 'Void',
-            voided_date: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        });
-        
-        await batch.commit();
-        
-        alert(`✅ Transaction ${txnId} voided`);
-        loadAllTransactions();
-        
-      } catch (error) {
-        console.error('❌ Error voiding transaction:', error);
-        alert('❌ Error: ' + error.message);
-      }
-    }
-    
-    async function refundTransaction(txnId) {
-      if (!confirm(`💰 Process refund for ${txnId}?\n\nThis will create a negative transaction.`)) {
-        return;
-      }
-      
-      try {
-        console.log('💰 Processing refund:', txnId);
-        
-        // Get original transaction
-        const snapshot = await db.collection('pos_transactions')
-          .where('transaction_id', '==', txnId)
-          .where('client_id', '==', currentBusiness)
-          .get();
-        
-        if (snapshot.empty) {
-          alert('❌ Transaction not found');
-          return;
-        }
-        
-        // Generate refund transaction ID
-        const refundTxnId = `REF-${txnId}`;
-        
-        // Create negative transactions
-        const batch = db.batch();
-        
-        snapshot.forEach(doc => {
-          const original = doc.data();
-          
-          const refundData = {
-            ...original,
-            transaction_id: refundTxnId,
-            transaction_action: 'Refund',
-            quantity: -Math.abs(original.quantity),
-            subtotal: -Math.abs(original.subtotal),
-            total: -Math.abs(original.total),
-            original_transaction_id: txnId,
-            refund_date: firebase.firestore.FieldValue.serverTimestamp(),
-            created_date: firebase.firestore.FieldValue.serverTimestamp()
-          };
-          
-          const refundRef = db.collection('pos_transactions').doc();
-          batch.set(refundRef, refundData);
-        });
-        
-        await batch.commit();
-        
-        alert(`✅ Refund processed!\n\nRefund ID: ${refundTxnId}`);
-        loadAllTransactions();
-        
-      } catch (error) {
-        console.error('❌ Error processing refund:', error);
-        alert('❌ Error: ' + error.message);
-      }
-    }
-    
-    function viewReceiptPDF(txnId) {
-      alert(`📄 PDF for ${txnId} coming soon!`);
-    }
-
-
-    // ==================== PRICE LIST ====================
-    
-    async function loadPriceList() {
-      if (!currentBusiness) {
-        console.error('❌ No currentBusiness set');
-        return;
-      }
-
-      console.log('🔍 Loading price_list for client_id:', currentBusiness);
-
-      try {
-        const snapshot = await db.collection('price_list')
-          .where('client_id', '==', currentBusiness)
-          .get();
-
-        console.log('📊 Found', snapshot.size, 'price_list items');
-
-        priceListData = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          priceListData.push({
-            id: doc.id,
-            ...data
-          });
-        });
-
-        priceListData.sort((a, b) => {
-          const nameA = (a.item_name || '').toLowerCase();
-          const nameB = (b.item_name || '').toLowerCase();
-          return nameA.localeCompare(nameB);
-        });
-
-        renderPriceList(priceListData);
-
-      } catch (error) {
-        console.error('❌ Error loading price list:', error);
-        document.getElementById('priceListContainer').innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Error Loading Price List</h3>
-            <p>Error: ${error.message}</p>
-            <button class="btn-primary" onclick="loadPriceList()"><i class="fas fa-sync"></i> Retry</button>
-          </div>
-        `;
-      }
-    }
-
-    function renderPriceList(data) {
-      const container = document.getElementById('priceListContainer');
-
-      if (data.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-tags"></i>
-            <h3>No Items Found</h3>
-            <p>No price list items available</p>
-          </div>
-        `;
-        return;
-      }
-
-      // Create table
-      const table = document.createElement('table');
-      table.className = 'data-table';
-      
-      // Table header with checkbox for select all
-      table.innerHTML = `
-        <thead>
-          <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <th style="width: 50px;">
-              <input type="checkbox" id="selectAllPriceItems" onchange="toggleSelectAllPriceItems(this.checked)">
-            </th>
-            <th>Item Number</th>
-            <th>Item Name</th>
-            <th>Description</th>
-            <th>Unit Cost</th>
-            <th>Margin (%)</th>
-            <th>Sell Price</th>
-            <th>Unit</th>
-          </tr>
-        </thead>
-        <tbody id="priceListTableBody">
-        </tbody>
-      `;
-      
-      const tbody = table.querySelector('#priceListTableBody');
-      
-      data.forEach(item => {
-        const unitCost = parseFloat(item.unit_cost) || 0;
-        const margin = parseFloat(item.margin) || 0;
-        const sellPrice = unitCost * (1 + margin / 100);
-        
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>
-            <input type="checkbox" class="price-item-checkbox" value="${item.id}" data-item='${JSON.stringify(item).replace(/'/g, "&apos;")}'>
-          </td>
-          <td><strong>${item.item_number}</strong></td>
-          <td>${item.item_name}</td>
-          <td>${item.description || 'N/A'}</td>
-          <td>$${unitCost.toFixed(2)}</td>
-          <td>
-            <span class="editable-margin" onclick="openMarginModal('${item.id}', '${item.item_name}', ${margin})" style="cursor: pointer; color: #667eea; text-decoration: underline;">
-              ${margin.toFixed(1)}%
-            </span>
-          </td>
-          <td><strong style="color: #10b981;">$${sellPrice.toFixed(2)}</strong></td>
-          <td>${item.unit_of_measure || 'N/A'}</td>
-        `;
-        tbody.appendChild(row);
-      });
-
-      container.innerHTML = '';
-      container.appendChild(table);
-      
-      // Update button states
-      updatePriceListButtons();
-    }
-    
-    function toggleSelectAllPriceItems(checked) {
-      const checkboxes = document.querySelectorAll('.price-item-checkbox');
-      checkboxes.forEach(cb => cb.checked = checked);
-      updatePriceListButtons();
-    }
-    
-    function updatePriceListButtons() {
-      const selectedCount = document.querySelectorAll('.price-item-checkbox:checked').length;
-      const downloadBtn = document.getElementById('downloadSelectedPDF');
-      const emailBtn = document.getElementById('emailSelectedPDF');
-      
-      if (downloadBtn) {
-        downloadBtn.disabled = selectedCount === 0;
-        downloadBtn.textContent = selectedCount > 0 ? `Download PDF (${selectedCount} items)` : 'Download PDF';
-      }
-      if (emailBtn) {
-        emailBtn.disabled = selectedCount === 0;
-        emailBtn.textContent = selectedCount > 0 ? `Email PDF (${selectedCount} items)` : 'Email PDF';
-      }
-    }
-    
-    async function downloadSelectedPricePDF() {
-      const selected = getSelectedPriceItems();
-      if (selected.length === 0) {
-        alert('Please select at least one item');
-        return;
-      }
-      await generatePricePDF(selected, 'download');
-    }
-    
-    async function emailSelectedPricePDF() {
-      const selected = getSelectedPriceItems();
-      if (selected.length === 0) {
-        alert('Please select at least one item');
-        return;
-      }
-      
-      const email = prompt('Enter customer email address:');
-      if (email) {
-        await generatePricePDF(selected, 'email', email);
-      }
-    }
-    
-    async function downloadAllPricesPDF() {
-      if (priceListData.length === 0) {
-        alert('No items to export');
-        return;
-      }
-      await generatePricePDF(priceListData, 'download');
-    }
-    
-    function getSelectedPriceItems() {
-      const checkboxes = document.querySelectorAll('.price-item-checkbox:checked');
-      const items = [];
-      checkboxes.forEach(cb => {
-        try {
-          const item = JSON.parse(cb.getAttribute('data-item').replace(/&apos;/g, "'"));
-          items.push(item);
-        } catch (e) {
-          console.error('Error parsing item:', e);
-        }
-      });
-      return items;
-    }
-    
-    async function generatePricePDF(items, action, email) {
-      // Simple PDF generation (in real app, use jsPDF or backend service)
-      console.log('Generating PDF for', items.length, 'items');
-      console.log('Action:', action);
-      if (email) console.log('Email to:', email);
-      
-      // Create printable content
-      let content = `
-        <html>
-        <head>
-          <title>Price List - ${currentBusinessName}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            h1 { color: #667eea; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-            th { background: #667eea; color: white; }
-            .total { font-weight: bold; background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>${currentBusinessName}</h1>
-          <h2>Price List</h2>
-          <p>Date: ${new Date().toLocaleDateString()}</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Item #</th>
-                <th>Item Name</th>
-                <th>Description</th>
-                <th>Unit Cost</th>
-                <th>Margin</th>
-                <th>Sell Price</th>
-                <th>Unit</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      
-      items.forEach(item => {
-        const unitCost = parseFloat(item.unit_cost) || 0;
-        const margin = parseFloat(item.margin) || 0;
-        const sellPrice = unitCost * (1 + margin / 100);
-        
-        content += `
-          <tr>
-            <td>${item.item_number}</td>
-            <td>${item.item_name}</td>
-            <td>${item.description || 'N/A'}</td>
-            <td>$${unitCost.toFixed(2)}</td>
-            <td>${margin.toFixed(1)}%</td>
-            <td>$${sellPrice.toFixed(2)}</td>
-            <td>${item.unit_of_measure || 'N/A'}</td>
-          </tr>
-        `;
-      });
-      
-      content += `
-            </tbody>
-          </table>
-        </body>
-        </html>
-      `;
-      
-      if (action === 'download') {
-        // Open in new window for printing/saving as PDF
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(content);
-        printWindow.document.close();
-        printWindow.print();
-      } else if (action === 'email') {
-        alert(`PDF would be emailed to: ${email}\n(In production, this would send via backend)`);
-        // In production: send content to backend API to generate PDF and email
-      }
-    }
-    // Auto-update unit_cost from latest inventory_history entry
-    async function syncPriceListFromInventory() {
-      if (!currentBusiness) {
-        console.error('❌ No business loaded');
-        return;
-      }
-      
-      console.log('🔄 Syncing unit costs from inventory_history for client:', currentBusiness);
-      
-      try {
-        // Get all inventory entries
-        const inventorySnapshot = await db.collection('inventory_history')
-          .where('client_id', '==', currentBusiness)
-          .orderBy('posting_date', 'desc')
-          .get();
-        
-        console.log('📦 Found', inventorySnapshot.size, 'inventory entries');
-        
-        // Group by item_number and get latest unit_cost for each
-        const latestCosts = {};
-        inventorySnapshot.forEach(doc => {
-          const data = doc.data();
-          const itemNum = data.item_number;
-          
-          if (itemNum && !latestCosts[itemNum]) {
-            latestCosts[itemNum] = {
-              unit_cost: data.unit_cost || 0,
-              posting_date: data.posting_date
-            };
-            console.log(`📊 Latest cost for ${itemNum}: $${data.unit_cost}`);
-          }
-        });
-        
-        console.log('💰 Latest costs:', latestCosts);
-        
-        // Update price_list items with latest costs
-        const priceSnapshot = await db.collection('price_list')
-          .where('client_id', '==', currentBusiness)
-          .get();
-        
-        console.log('💵 Found', priceSnapshot.size, 'price_list items');
-        
-        let updateCount = 0;
-        const batch = db.batch();
-        
-        priceSnapshot.forEach(doc => {
-          const priceItem = doc.data();
-          const latestCost = latestCosts[priceItem.item_number];
-          
-          if (latestCost && latestCost.unit_cost !== priceItem.unit_cost) {
-            batch.update(doc.ref, {
-              unit_cost: latestCost.unit_cost,
-              updated_at: firebase.firestore.FieldValue.serverTimestamp(),
-              last_cost_sync: latestCost.posting_date
-            });
-            updateCount++;
-            console.log(`📝 Updating ${priceItem.item_name}: $${priceItem.unit_cost} → $${latestCost.unit_cost}`);
-          }
-        });
-        
-        if (updateCount > 0) {
-          await batch.commit();
-          console.log(`✅ Updated ${updateCount} items with latest costs`);
-          alert(`✅ Updated ${updateCount} items with latest costs from inventory`);
-          // Reload price list to show updated values
-          await loadPriceList();
-        } else {
-          console.log('✅ All costs are up to date');
-          alert('✅ All costs are already up to date');
-        }
-        
-      } catch (error) {
-        console.error('❌ Error syncing costs:', error);
-      }
-    }
-    function filterPriceList() {
-      const searchTerm = document.getElementById('priceSearchInput').value.toLowerCase();
-      
-      const filtered = itemListData.filter(item => 
-        item.item_name.toLowerCase().includes(searchTerm) ||
-        (item.item_number && item.item_number.toLowerCase().includes(searchTerm)) ||
-        (item.description && item.description.toLowerCase().includes(searchTerm))
-      );
-
-      renderPriceList(filtered);
-    }
-
-    function openAddPriceModal() {
-      document.getElementById('priceModalTitle').innerHTML = '<i class="fas fa-tag"></i> Add Price Item';
-      document.getElementById('priceForm').reset();
-      document.getElementById('priceDocId').value = '';
-      document.getElementById('priceModal').classList.add('active');
-    }
-
-    function editPriceItem(item) {
-      document.getElementById('priceModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Price Item';
-      document.getElementById('priceDocId').value = item.id;
-      document.getElementById('priceItemNumber').value = item.item_number;
-      document.getElementById('priceItemName').value = item.item_name;
-      document.getElementById('priceDescription').value = item.description || '';
-      document.getElementById('priceUnitCost').value = item.unit_cost;
-      document.getElementById('priceMargin').value = item.margin;
-      document.getElementById('priceUnitOfMeasure').value = item.unit_of_measure;
-      document.getElementById('priceModal').classList.add('active');
-    }
-
-    function closePriceModal() {
-      document.getElementById('priceModal').classList.remove('active');
-      document.getElementById('priceForm').reset();
-    }
-
-    document.getElementById('priceForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const docId = document.getElementById('priceDocId').value;
-      const itemNumber = document.getElementById('priceItemNumber').value;
-      const itemName = document.getElementById('priceItemName').value;
-      const description = document.getElementById('priceDescription').value;
-      const unitCost = parseFloat(document.getElementById('priceUnitCost').value);
-      const margin = parseFloat(document.getElementById('priceMargin').value);
-      const unitOfMeasure = document.getElementById('priceUnitOfMeasure').value;
-
-      const priceData = {
-        client_id: currentBusiness,
-        client_name: currentBusinessName,
-        item_number: itemNumber,
-        item_name: itemName,
-        description: description,
-        unit_cost: unitCost,
-        margin: margin,
-        unit_of_measure: unitOfMeasure,
-        updated_at: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      try {
-        if (docId) {
-          await db.collection('price_list').doc(docId).update(priceData);
-        } else {
-          priceData.created_at = firebase.firestore.FieldValue.serverTimestamp();
-          await db.collection('price_list').add(priceData);
-        }
-
-        closePriceModal();
-        await loadItemList();
-          await loadPriceList();
-      } catch (error) {
-        console.error('Error saving price item:', error);
-        alert('Error: ' + error.message);
-      }
-    });
-
-    async function deletePriceItem(id, itemName) {
-      if (confirm(`Delete "${itemName}"?`)) {
-        try {
-          await db.collection('price_list').doc(id).delete();
-          await loadItemList();
-          await loadPriceList();
-        } catch (error) {
-          console.error('Error deleting:', error);
-          alert('Error: ' + error.message);
-        }
-      }
-    }
-
-    // Quick Margin Edit
-    function openMarginModal(itemId, itemName, currentMargin) {
-      document.getElementById('marginItemId').value = itemId;
-      document.getElementById('marginItemName').textContent = itemName;
-      document.getElementById('marginValue').value = currentMargin;
-      document.getElementById('marginModal').classList.add('active');
-    }
-
-    function closeMarginModal() {
-      document.getElementById('marginModal').classList.remove('active');
-      document.getElementById('marginForm').reset();
-    }
-
-    document.getElementById('marginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const itemId = document.getElementById('marginItemId').value;
-      const newMargin = parseFloat(document.getElementById('marginValue').value);
-
-      try {
-        await db.collection('price_list').doc(itemId).update({
-          margin: newMargin,
-          updated_at: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        closeMarginModal();
-        await loadItemList();
-          await loadPriceList();
-      } catch (error) {
-        console.error('Error updating margin:', error);
-        alert('Error: ' + error.message);
-      }
-    });
-
-    // Responsive
-    window.addEventListener('resize', () => {
-    
-    // Update price list button states when checkboxes change
-    document.addEventListener('change', (e) => {
-      if (e.target.classList.contains('price-item-checkbox')) {
-        updatePriceListButtons();
-      }
-    });
-      isMobile = window.innerWidth <= 768;
-    });
-  </script>
-
-  <!-- SheetJS Library for Excel processing -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-
-</body>
-</html>
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sampars Downtrade Ultra Modern</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
- tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Plus Jakarta Sans', 'sans-serif'], }, colors: { brand: { 50: '#f0f7ff', 100: '#e0effe', 200: '#bae0fd', [...]
-</script>
-<style>
-body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
-.font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-.glass-card { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04); }
-/* Sidebar show/hide */
-#sidebar { transform: translateX(-100%); transition: transform .32s cubic-bezier(.4,0,.2,1); z-index:1000; }
-#sidebar.open { transform: translateX(0); }
-#overlay { z-index: 900; transition: opacity .25s ease; opacity: 0; pointer-events: none; }
-#overlay.show { opacity: 1; pointer-events: auto; }
-.modern-input { background:#fff; border:1.5px solid #f1f5f9; transition: all .18s ease; }
-.modern-input:focus { border-color:#2563eb; box-shadow:0 0 0 6px rgba(37,99,235,0.06); outline: none; }
-.date-picker { background: white; border: 1px solid #e2e8f0; border-radius: .75rem; padding: .5rem; }
-.fixed-top-action { position: sticky; top: 1rem; z-index: 30; background: transparent; }
-.modal-backdrop { background: rgba(2,6,23,0.5); }
-.popout { transition: transform .12s ease, box-shadow .12s ease; }
-.popout:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(2,6,23,0.08); }
-/* subtle editable target: small edit button */
-.edit-target-btn { font-size: 12px; padding: 4px 6px; border-radius: 6px; border: 1px solid #e6e7eb; background: #fff; cursor: pointer; }
-.segment { display:inline-flex; gap:6px; background:#fff; border-radius:999px; padding:4px; border:1px solid #e6e7eb; }
-.segment button { padding:6px 10px; border-radius:999px; background:transparent; border: none; cursor: pointer; }
-.segment button.active { background:#2563eb; color:white; }
-.hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.badge-new { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; background:#ecfdf5; color:#065f46; border-radius:999px; font-weight:600; font-size:12px; }
-.badge-dot { width:8px; height:8px; background:#10b981; border-radius:999px; display:inline-block; }
-
-/* runtime injected sticky CSS will be appended by script */
-</style>
-</head>
-<body class="overflow-x-hidden">
-<!-- Sidebar -->
-<div id="sidebar" class="fixed top-0 left-0 w-[260px] h-full bg-white shadow-2xl border-r border-slate-100 flex flex-col">
-  <div class="p-8 border-b border-slate-50">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-600/20">
-        <span class="text-white font-black text-xl">D</span>
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: PREVIEW (my submissions) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page" id="page-preview">
+    <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:18px">My Submissions</div>
+    <div id="my-submissions-list">
+      <div style="text-align:center;padding:48px;color:var(--gray3);font-size:14px">You have not submitted any reports yet.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PAGE: SETTINGS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="page" id="page-settings">
+    <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:18px">⚙️ System Settings</div>
+    <div class="form-section">
+      <div class="fs-head"><div class="fs-num">1</div><div><div class="fs-title">Product SKU Configuration</div><div class="fs-desc">Manage the Pings product list used in forms</div></div></div>
+      <div class="fs-body">
+        <div style="font-size:13px;color:var(--gray4);margin-bottom:12px">Current active SKUs (edit <code>SKUS</code> array in JS to customise):</div>
+        <div id="settings-sku-list" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
-      <div>
-        <h1 class="font-display font-bold text-lg leading-tight text-slate-900">Sampars</h1>
-        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Sales Office</span>
+    </div>
+    <div class="form-section">
+      <div class="fs-head"><div class="fs-num">2</div><div><div class="fs-title">Data Management</div><div class="fs-desc">Export, import, or clear stored data</div></div></div>
+      <div class="fs-body" style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-green" onclick="exportAllCSV()">⬇ Export All to CSV</button>
+        <button class="btn btn-outline" onclick="exportJSON()">⬇ Export Current Form JSON</button>
+        <button class="btn btn-outline" onclick="if(confirm('Clear all data? This cannot be undone.'))clearAllData()">🗑 Clear All Data</button>
       </div>
     </div>
   </div>
-  <nav class="flex-1 p-4 space-y-2 mt-4">
-    <button onclick="showHome()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-all group"> <span cl[...]
-    <button onclick="showCustomers()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-all group"> <sp[...]
-    <button onclick="showPriceList()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-all group"> <sp[...]
-    <button onclick="showPriceSurvey()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-all group"> <[...]
-    <button onclick="showPriceSurveyFeedback()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-all g[...]
-    <button onclick="showSalesDashboard()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-all group"[...]
-  </nav>
-  <div class="p-6 mt-auto border-t border-slate-50 bg-slate-50/50">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full bg-brand-100 border-2 border-white flex items-center justify-center text-brand-700 font-bold text-xs shadow-sm">MGD</div>
-      <div class="text-xs">
-        <p class="font-bold text-slate-800">Sampars</p>
-        <p class="text-slate-500">Marcus Garvey</p>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Overlay -->
-<div id="overlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm hidden" onclick="hideSidebar()"></div>
-<!-- Top Navigation -->
-<header class="sticky top-0 z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 px-6 py-4">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-4">
-      <button id="menuBtn" onclick="toggleMenu()" class="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center transition-colors">
-        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></pa[...]
-      </button>
-      <h2 id="pageTitle" class="font-display font-extrabold text-xl text-slate-900 tracking-tight">Deal of the Day</h2>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="hidden md:inline-flex text-[10px] font-black bg-brand-50 text-brand-600 px-2.5 py-1 rounded-lg uppercase tracking-widest">System Operational</span>
-      <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200"></div>
-    </div>
-  </div>
-</header>
 
-<!-- Add Customer Modal -->
-<div id="addCustomerModal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-  <div class="bg-white rounded-lg w-full max-w-2xl p-6 shadow-xl">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-bold text-lg">Add New Customer</h3>
-      <button onclick="closeAddModal()" class="text-slate-500 hover:text-slate-800">✕</button>
+</div><!-- /main -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Report Detail</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <input id="modal_salesCode" placeholder="Sales Code" class="modern-input p-3 rounded" />
-      <input id="modal_salesRep" placeholder="Sales Rep Name" class="modern-input p-3 rounded" />
-      <input id="modal_businessName" placeholder="Business Name" class="modern-input p-3 rounded" />
-      <input id="modal_customerNumber" placeholder="Customer Number" class="modern-input p-3 rounded" />
-      <input id="modal_businessType" placeholder="Business Type" class="modern-input p-3 rounded" />
-      <input id="modal_customerName" placeholder="Customer Name" class="modern-input p-3 rounded" />
-      <input id="modal_address" placeholder="Address" class="modern-input p-3 rounded md:col-span-2" />
-    </div>
-    <div class="mt-4 flex justify-end gap-2">
-      <button onclick="closeAddModal()" class="px-4 py-2 rounded border">Cancel</button>
-      <button onclick="modalSubmitNewCustomer()" class="px-4 py-2 rounded bg-brand-600 text-white">Add Customer</button>
-    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
-<main id="content" class="content max-w-7xl mx-auto py-10 px-6 animate-slide-up"></main>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
+<!-- ════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ════════════════════════════════════════════════ -->
 <script>
-/* Full script (V1 base) with only the Deal of the Day and Price List changed to V6 behavior.
-   Everything else remains the same as V1. */
+// ── DATA ─────────────────────────────────────────────────
+const SKUS = [
+  {name:"Sud Sud (Yellow) 350g",  uom:"Grams",    upc:20, price:137.50},
+  {name:"Sud Sud (Green) 250g",   uom:"Grams",    upc:20, price:104.67},
+  {name:"High Grade 350g",        uom:"Grams",    upc:20, price:180.00},
+  {name:"Sud Sud Yellow 900g",    uom:"Grams",    upc:12, price:287.50},
+  {name:"Sud Sud Sea Breeze 700g",uom:"Grams",    upc:10, price:325.00},
+  {name:"Sud Sud Sea Breeze 200g",uom:"Grams",    upc:40, price:94.50},
+  {name:"Go Fresh (500g)",        uom:"Grams",    upc:24, price:80.00},
+  {name:"Go Fresh (1kg)",         uom:"Grams",    upc:12, price:145.00},
+];
 
-/* Globals & helpers */
-let sidebarOpen = false;
-const sidebarEl = document.getElementById('sidebar');
-const overlayEl = document.getElementById('overlay');
-function toggleMenu(){ sidebarOpen = !sidebarOpen; if (sidebarOpen){ sidebarEl.classList.add('open'); overlayEl.classList.add('show'); overlayEl.classList.remove('hidden'); } else { sidebarEl.classLis[...]
-function hideSidebar(){ sidebarOpen=false; sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); overlayEl.classList.add('hidden'); }
-function setPageTitle(t){ document.getElementById('pageTitle').innerText = t; }
-function escapeHtml(s){ if (s===null||s===undefined) return ''; return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
-function idify(s){ return String(s).replace(/[^a-zA-Z0-9-_]/g,'_'); }
-function formatMoney(n){ if (n===null||n===undefined||n==='') return '—'; const num=Number(n); if (isNaN(num)) return String(n); return '$' + num.toLocaleString(undefined,{minimumFractionDigits:2,ma[...]
-function formatDateLongTime(v){ if (!v) return ''; const d=new Date(v); if (isNaN(d.getTime())) return String(v); const opts={year:'numeric',month:'long',day:'numeric',hour:'numeric',minute:'2-digit'}[...]
+let submissions = JSON.parse(localStorage.getItem("ab_submissions") || "[]");
+let currentDays = 2;
+let checkInTime = null;
+let formUID = generateUID();
 
-/* Inject sticky CSS for price table header + first two columns */
-(function(){ const css = `.price-table thead th{ position:sticky; top:0; background:#fff; z-index:4;} .price-table tbody td.sticky-col-0, .price-table thead th.sticky-col-0{ position:sticky; left:0; z[...]
+// ── INIT ─────────────────────────────────────────────────
+function init(){
+  buildInventoryTable();
+  buildReorderTable();
+  buildDayPanels(2);
+  buildSummaryTable();
+  setTimestamps();
+  updateClock();
+  setInterval(updateClock, 1000);
+  getGPS();
+  setTopDate();
+  updateDashboard();
+  buildSettingsSKUs();
+  updateNavBadge();
+  setInterval(updateHoursOnSite, 60000);
+}
 
-/* ========================= Home / Deal of the Day (V6-style update applied to V1 base) ========================= */
-function showHome(){ hideSidebar(); setPageTitle("Deal of the Day"); content.innerHTML = ` <div class="grid gap-8 md:grid-cols-12"> <div class="md:col-span-12 glass-card rounded-3xl p-8 border border-[...]
-function renderDealPosts(posts){ const el=document.getElementById('deal'); if(!posts||posts.length===0){ el.innerHTML='<div class="p-6 text-slate-400">No broadcast posts</div>'; return; } let html='';[...]
-function saveHomeDeal(){ const val=document.getElementById('dealInput').value; if(!val){ alert('Please enter a message.'); return; } const pw=prompt('Enter password to add broadcast:'); if(pw===null) [...]
-function deleteDealPrompt(index){ const pw=prompt('Enter password to delete this post:'); if(pw===null) return; if(window.google && google.script && google.script.run){ google.script.run.withSuccessHa[...]
+function generateUID(){
+  return "ABF-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substr(2,4).toUpperCase();
+}
 
-/* ========================= Customers (unchanged V1) ========================= */
-const CUSTOMER_FIELDS = [ {title: 'Sales Code', synonyms: ['sales code','salescode','sales_code']}, {title: 'Sales Rep Name', synonyms: ['sales rep name','sales rep','salesrep','sales_rep_name']}, {ti[...]
-function normalizeHeader(h){ if(h===null||h===undefined) return ''; return String(h).toLowerCase().replace(/[\.\#\$\[\]]/g,'').replace(/\s+/g,' ').trim(); }
-function showCustomers(){ hideSidebar(); setPageTitle("Customer Lookup"); content.innerHTML = ` <div class="glass-card rounded-3xl overflow-hidden border border-slate-100 p-6"> <div class="flex justif[...]
-let windowCustomerData = [];
-function refreshCustomers(){ if(window.google && google.script && google.script.run){ google.script.run.withSuccessHandler(function(data){ windowCustomerData=data||[]; renderCustomersGrid(windowCustom[...]
-function resetCustomers(){ document.getElementById('customerSearch').value=''; refreshCustomers(); }
-function renderCustomersGrid(data){ const grid=document.getElementById('customersGrid'); if(!data||data.length<=1){ grid.innerHTML=`<div class="p-20 text-center text-slate-400 font-medium">No customer[...]
+function setTimestamps(){
+  checkInTime = new Date();
+  const f = formatDateTime(checkInTime);
+  document.getElementById("form-timestamp").textContent = f;
+  document.getElementById("checkin-time").value = f;
+  document.getElementById("form-uid").textContent = "Form ID: " + formUID;
+}
 
-/* ========================= Price List (V6 changes applied to V1) ========================= */
-function showPriceList(){ hideSidebar(); setPageTitle("Price List"); content.innerHTML = ` <div class="glass-card rounded-3xl overflow-hidden border border-slate-100"> <div class="p-8 border-b border-[...]
+function updateClock(){
+  const now = new Date();
+  document.getElementById("live-clock").textContent = now.toLocaleTimeString("en-JM");
+}
 
-let fullPriceData = [];
-let displayedPriceData = [];
+function setTopDate(){
+  const now = new Date();
+  document.getElementById("top-date").textContent = now.toLocaleDateString("en-JM",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
 
-function refreshPriceList(){
-  if (window.google && google.script && google.script.run) {
-    google.script.run.withSuccessHandler(function(data){
-      fullPriceData = data || [];
-      displayedPriceData = fullPriceData.slice();
-      renderPriceList(displayedPriceData);
-    }).withFailureHandler(function(err){
-      console.error('getPriceList failed', err);
-      document.getElementById('priceTable').innerHTML = '<div class="p-6 text-red-500">Failed to load price list</div>';
-    }).getPriceList();
+function formatDateTime(d){ return d.toLocaleDateString("en-JM",{day:"2-digit",month:"short",year:"numeric"}) + " " + d.toLocaleTimeString("en-JM"); }
+function formatDate(d){ return d.toLocaleDateString("en-JM",{day:"2-digit",month:"short",year:"numeric"}); }
+
+function getGPS(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      p => { document.getElementById("gps-location").value = `${p.coords.latitude.toFixed(5)}, ${p.coords.longitude.toFixed(5)}`; },
+      ()  => { document.getElementById("gps-location").value = "Location unavailable"; }
+    );
   } else {
-    fullPriceData = [["Groceries","White Rice",35.00,"bag","Bulk",30.00,"In-Stock","Admin",new Date().toISOString()]];
-    displayedPriceData = fullPriceData.slice();
-    renderPriceList(displayedPriceData);
+    document.getElementById("gps-location").value = "Not supported";
   }
 }
-function resetPriceList(){ document.getElementById('priceSearchInput').value=''; displayedPriceData = fullPriceData.slice(); renderPriceList(displayedPriceData); }
 
-function renderPriceList(data) {
-  try {
-    const tableDiv = document.getElementById("priceTable");
-    if (!data || data.length === 0) { tableDiv.innerHTML = `<div class="p-6 text-slate-400">No price data</div>`; return; }
-    var recentCount = 0; var now=new Date();
-    for(var i=0;i<data.length;i++){ var u=data[i][8]; if(u){ var ud=(typeof u==='string')?new Date(u):new Date(u); if(!isNaN(ud.getTime())){ var diff=(now-ud)/(1000*60*60*24); if(diff<=7) recentCount+[...]
-    document.getElementById('pricePreview').innerHTML = recentCount>0?(`<span class="badge-new"><span class="badge-dot"></span> ${recentCount} New!</span>`):`<span class="text-slate-400">No recent upd[...]
-
-    let html = `<div class="overflow-x-auto"><table class="w-full text-left text-sm price-table"><thead class="bg-slate-50"><tr> <th class="px-4 py-2 sticky-col-0">Category</th> <th class="px-4 py-2 s[...]
-    data.forEach((r,i) => {
-      const origVal = (r[2]!==undefined&&r[2]!==null&&r[2]!=='')?Number(r[2]):'';
-      const dealVal = (r[5]!==undefined&&r[5]!==null&&r[5]!=='')?Number(r[5]):'';
-      let recentBadge='';
-      const updatedRaw=r[8];
-      if(updatedRaw){ const ud=(typeof updatedRaw==='string')?new Date(updatedRaw):new Date(updatedRaw); if(!isNaN(ud.getTime())){ var diffDays=(new Date()-ud)/(1000*60*60*24); if(diffDays<=7) recentB[...]
-      html+=`<tr class="border-b"> <td class="px-4 py-2 sticky-col-0">${escapeHtml(r[0]||'')}</td> <td class="px-4 py-2 font-bold sticky-col-1">${escapeHtml(r[1]||'')}</td> <td class="px-4 py-2 text-r[...]
-    });
-    html += `</tbody></table></div>`;
-    tableDiv.innerHTML = html;
-  } catch(e){ console.error('renderPriceList failed', e); document.getElementById('priceTable').innerHTML = '<div class="p-6 text-red-500">Error rendering price list (see console)</div>'; }
+// ── INVENTORY TABLE ──────────────────────────────────────
+function buildInventoryTable(){
+  const tbody = document.getElementById("inv-tbody");
+  tbody.innerHTML = SKUS.map((s,i) => `
+    <tr>
+      <td>${s.name}</td>
+      <td class="sku-uom">${s.uom}</td>
+      <td class="sku-uom">${s.upc}</td>
+      <td><input type="number" min="0" value="0" id="inv-cases-${i}" oninput="calcInvRow(${i})" style="width:80px"></td>
+      <td><input type="number" min="0" value="0" id="inv-units-${i}" oninput="calcInvTotals()" style="width:80px"></td>
+      <td class="sku-uom">J$${s.price.toFixed(2)}</td>
+      <td><span class="sku-total" id="inv-val-${i}">J$0.00</span></td>
+      <td><input type="text" placeholder="e.g. Aisle 3, Shelf B" id="inv-shelf-${i}" style="border:1.5px solid var(--gray2);border-radius:6px;padding:5px 8px;font-size:12px;width:140px"></td>
+    </tr>
+  `).join("");
 }
 
-function filterPriceList(){ const searchVal=document.getElementById("priceSearchInput")?.value?.toLowerCase()||""; if(!searchVal){ displayedPriceData=fullPriceData.slice(); renderPriceList(displayedPr[...]
-
-/* Inline edit original price */
-function enterEditPrice(i,currentValue){ const displayEl=document.getElementById('orig_display_'+i); if(!displayEl) return; const inputId='orig_input_'+i; const saveBtnId='orig_save_'+i; const cancelB[...]
-
-/* Save changes (bulk) */
-function savePriceChanges(){ const pw=prompt('Enter password to save price changes:'); if(pw===null) return; if(!(window.google && google.script && google.script.run)){ alert('Mock save - no Apps Scri[...]
-
-/* ----------------- PDF generation & Custom Popout (V6 behavior applied) ----------------- */
-function generateFullPricePDF(){ if(!(window.google && google.script && google.script.run)){ alert('Mock generate PDF'); return; } google.script.run.withSuccessHandler(downloadBase64).withFailureHandl[...]
-
-function openCustomPriceModal(){ const modal=document.getElementById('customPriceModal'); document.getElementById('customSearchInput').value=''; document.getElementById('customEmail').value=''; docume[...]
-function closeCustomPriceModal(){ const modal=document.getElementById('customPriceModal'); modal.classList.remove('flex'); modal.classList.add('hidden'); const sug=document.getElementById('custom_sugg[...]
-function addProductFromSearch(){ const q=(document.getElementById('customSearchInput')?.value||'').trim(); if(!q) return alert('Type to search and pick a product from suggestions.'); const found=(wind[...]
-function addProductByIndex(idx){ window._selectedCustom = window._selectedCustom || []; if(window._selectedCustom.some(s=>s.idx===idx)) return; const row = fullPriceData[idx]||[]; const priceVal = (ro[...]
-function renderCustomSelected(){ const cont=document.getElementById('customSelectedList'); const items=window._selectedCustom||[]; if(!items.length){ cont.innerHTML='<div class="p-4 text-slate-400">No[...]
-function removeCustomItem(i){ (window._selectedCustom||[]).splice(i,1); renderCustomSelected(); }
-
-function generateCustomPricePDF(sendEmail){ const selected=(window._selectedCustom||[]).map(it=>({ category: fullPriceData[it.idx][0]||'', product: it.product, price: (it.price !== undefined && it.pri[...]
-
-/* Utility to download base64 */
-function downloadBase64(obj){ if(!obj||!obj.data){ alert('No data returned'); return; } const b64=obj.data; const byteChars=atob(b64); const byteNumbers=new Array(byteChars.length); for(let i=0;i<byte[...]
-
-/* ========================= Price Survey, Feedback, Sales Dashboard (V1 kept) ========================= */
-/* (All V1 logic left unchanged for survey and sales dashboard functions.) */
-function showPriceSurvey(){ hideSidebar(); setPageTitle('Price Survey'); content.innerHTML = ` <div class="glass-card rounded-3xl p-6"> <h2 class="font-bold text-lg">Price Survey</h2> <p class="text-s[...]
-function submitSurvey(){ const entry={ itemName: document.getElementById('survey_item')?.value, unit: document.getElementById('survey_unit')?.value, supplier: document.getElementById('survey_supplier'[...]
-
-function showPriceSurveyFeedback(){ hideSidebar(); setPageTitle('Price Survey Feedback'); content.innerHTML = ` <div class="glass-card rounded-3xl p-6"> <div class="flex justify-between items-center">[...]
-let windowSurveyData=[]; function refreshSurveyFeedback(){ if(!(window.google && google.script && google.script.run)){ windowSurveyData=[['admin@','2026-01-01','ACME','White Rice','bag',35,'Sample']];[...]
-function renderSurveyFeedback(data){ const c=document.getElementById('surveyList'); if(!data||data.length===0){ c.innerHTML='<div class="p-6 text-slate-500">No responses</div>'; return; } let html='<d[...]
-function filterSurveyFeedback(){ const q=(document.getElementById('survey_filter')?.value||'').toLowerCase().trim(); if(!windowSurveyData) return; if(!q){ renderSurveyFeedback(windowSurveyData); retur[...]
-
-/* ========================= Sales Dashboard (restored from V1) ========================= */
-let windowSalesData = []; let windowRawCashData=[]; let windowRawCreditData=[]; let rawView='cash';
-function showSalesDashboard(){
-  hideSidebar(); setPageTitle("Sales Performance");
-  content.innerHTML = `
-  <div class="grid gap-6 mb-8 md:grid-cols-5">
-    <div class="glass-card p-6 rounded-3xl border border-white">
-      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dept Target</p>
-      <h4 id="statDeptTarget" class="text-2xl font-display font-bold text-slate-900">$0.00</h4>
-    </div>
-    <div class="glass-card p-6 rounded-3xl border border-white">
-      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Sales</p>
-      <h4 id="statTotalSales" class="text-2xl font-display font-bold text-slate-900">$0.00</h4>
-    </div>
-    <div class="glass-card p-6 rounded-3xl border border-white">
-      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Avg Performance</p>
-      <h4 id="statAvgPerf" class="text-2xl font-display font-bold text-emerald-500">0%</h4>
-    </div>
-    <div class="glass-card p-6 rounded-3xl border border-white">
-      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Cash vs Credit</p>
-      <h4 id="statCashCredit" class="text-2xl font-display font-bold text-slate-900">0/0</h4>
-    </div>
-    <div class="glass-card p-6 rounded-3xl border border-white">
-      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Customer Reach</p>
-      <h4 id="statCustReach" class="text-2xl font-display font-bold text-brand-600">0%</h4>
-    </div>
-  </div>
-
-  <div class="glass-card rounded-3xl overflow-hidden border border-slate-100 mb-8">
-    <div class="p-8 border-b border-slate-50 flex justify-between items-center">
-      <div>
-        <h3 class="font-display font-bold text-lg text-slate-900">Sales Breakdown</h3>
-        <p class="text-sm text-slate-500 font-medium">Representative performance tracking against targets.</p>
-      </div>
-    </div>
-    <div id="salesTable" class="overflow-x-auto p-4">
-      <div class="p-6 text-slate-500">Loading Sales Data...</div>
-    </div>
-  </div>
-
-  <div class="glass-card rounded-3xl p-8 border border-slate-100 mb-8">
-    <h3 class="font-display font-bold text-lg text-slate-900 mb-4">Top 3 Performers (Closest to Target %)</h3>
-    <div id="topPerformers" class="overflow-x-auto">
-      <div class="p-10 text-center"><span class="animate-pulse font-bold text-slate-300">Loading Top Performers...</span></div>
-    </div>
-  </div>
-
-  <div class="glass-card rounded-3xl overflow-hidden border border-slate-100">
-    <div class="p-8 border-b border-slate-50 flex justify-between items-center">
-      <div>
-        <h3 class="font-display font-bold text-lg text-slate-900">Raw Sales Breakdown</h3>
-        <p class="text-sm text-slate-500 font-medium">Detailed transaction data from Cash and Credit sales.</p>
-      </div>
-      <div>
-        <div class="segment">
-          <button id="seg_cash" class="active" onclick="setRawView('cash')">Cash Sales</button>
-          <button id="seg_credit" onclick="setRawView('credit')">Credit Sales</button>
-        </div>
-      </div>
-    </div>
-    <div class="px-4 pb-4">
-      <div id="rawControls" class="flex flex-col sm:flex-row gap-4 mb-6 mt-4"></div>
-      <div class="flex justify-end gap-2 mb-2">
-        <button onclick="downloadRaw('cash')" class="px-3 py-2 rounded border">Download Cash CSV</button>
-        <button onclick="downloadRaw('credit')" class="px-3 py-2 rounded border">Download Credit CSV</button>
-      </div>
-      <div id="rawContainer" class="mt-2">
-        <div id="rawTableArea" class="overflow-x-auto p-2">
-          <div class="p-6 text-slate-500">Select Cash or Credit to load raw data.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  `;
-  if (window.google && google.script && google.script.run) {
-    google.script.run.withSuccessHandler(function(d){ windowSalesData = d || []; renderSalesData(windowSalesData); }).getSalesData();
-    google.script.run.withSuccessHandler(function(d){ windowRawCashData = d || []; }).getCashSalesRaw();
-    google.script.run.withSuccessHandler(function(d){ windowRawCreditData = d || []; }).getCreditSalesRaw();
-  } else {
-    windowSalesData = [ ["REP001", "James Smith", 100000, 45000, 50000, 95000, 0.95, 50, 45, 0.90, 200], ["REP002", "Sarah Wilson", 120000, 80000, 50000, 130000, 1.08, 60, 58, 0.96, 250] ];
-    windowRawCashData = [["TXN001","STAFF001","CUST001","2024-01-01",100.00,5.00],["TXN002","STAFF002","CUST002","2024-01-05",200.00,10.00]];
-    windowRawCreditData = [["1","CUST001","John Doe","2024-01-02",150.00],["2","CUST002","Jane Roe","2024-01-08",300.00]];
-    renderSalesData(windowSalesData);
-  }
-  setRawView(rawView);
+function calcInvRow(i){
+  const cases = parseInt(document.getElementById(`inv-cases-${i}`).value)||0;
+  const units = cases * SKUS[i].upc;
+  document.getElementById(`inv-units-${i}`).value = units;
+  document.getElementById(`inv-val-${i}`).textContent = "J$" + (units * SKUS[i].price).toLocaleString("en-JM",{minimumFractionDigits:2});
+  calcInvTotals();
+  updateSummaryTable();
 }
 
-function renderSalesData(data) {
-  const tableDiv = document.getElementById("salesTable");
-  if (!data || data.length === 0) { tableDiv.innerHTML = `<div class="p-6 text-slate-500">No sales data available.</div>`; return; }
-  let totalSalesSum = 0, totalPerfSum = 0, totalTargetSum = 0, cashSum = 0, creditSum = 0, custReachSum = 0;
-  let html = `<div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-50"><tr> <th class="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400 b[...]
-  data.forEach(function(r){
-    const repId = r[0]; const name = r[1]; const target = parseFloat(r[2] || 0); const cash = parseFloat(r[3] || 0); const credit = parseFloat(r[4] || 0); const total = parseFloat(r[5] || 0); const sa[...]
-    totalSalesSum += total; totalPerfSum += salesPerc; totalTargetSum += target; cashSum += cash; creditSum += credit; custReachSum += (isNaN(custPerc)?0:custPerc);
-    const safeId = idify(repId);
-    html += `<tr class="hover:bg-slate-50/50 transition-colors"> <td class="px-6 py-4"> <div class="font-bold text-slate-800">${escapeHtml(name)}</div> <div class="text-[10px] font-medium text-slate-4[...]
+function calcInvTotals(){
+  let tu=0, tv=0;
+  SKUS.forEach((_,i)=>{
+    const u = parseInt(document.getElementById(`inv-units-${i}`).value)||0;
+    tu += u; tv += u * SKUS[i].price;
   });
-  html += `</tbody></table></div>`;
-  tableDiv.innerHTML = html;
-  document.getElementById("statDeptTarget").innerText = formatMoney(totalTargetSum);
-  document.getElementById("statTotalSales").innerText = formatMoney(totalSalesSum);
-  document.getElementById("statAvgPerf").innerText = (totalPerfSum / data.length).toFixed(1) + "%";
-  document.getElementById("statCashCredit").innerText = ((cashSum / 1000).toFixed(0) + "k / " + (creditSum / 1000).toFixed(0) + "k");
-  document.getElementById("statCustReach").innerText = (custReachSum / data.length).toFixed(1) + "%";
-
-  // top performers
-  const sortedData = [...data].sort((a,b) => (parseFloat(b[6])||0) - (parseFloat(a[6])||0));
-  const top3 = sortedData.slice(0,3);
-  let topHtml = `<div class="space-y-4">`;
-  top3.forEach(r=>{ const name=r[1]; const salesPerc=(parseFloat(r[6])||0)*100; const total=parseFloat(r[5]||0); const target=parseFloat(r[2]||0); topHtml += `<div class="flex justify-between items-ce[...]
-  if(top3.length===0) topHtml += `<div class="text-center text-slate-400 py-4">Need more data for top 3</div>`;
-  topHtml += `</div>`;
-  document.getElementById("topPerformers").innerHTML = topHtml;
+  document.getElementById("total-opening-units").textContent = tu.toLocaleString();
+  document.getElementById("total-opening-value").textContent = "J$" + tv.toLocaleString("en-JM",{minimumFractionDigits:2});
+  document.getElementById("gt-opening").textContent = tu.toLocaleString();
+  updateSummaryTable();
 }
 
-/* edit target UX */
-function enterEditTarget(safeId, repIdDisplay, currentValue){
-  const displayEl = document.getElementById('target_display_' + safeId);
-  if (!displayEl) return;
-  const inputId = 'target_input_' + safeId; const saveBtnId = 'target_save_' + safeId; const cancelBtnId = 'target_cancel_' + safeId;
-  const html = `<input id="${inputId}" type="number" class="modern-input p-1 text-right w-28 inline-block" value="${currentValue}" /> <button id="${saveBtnId}" class="ml-2 edit-target-btn">Save</butto[...]
-  displayEl.insertAdjacentHTML('afterend', html); displayEl.style.display='none';
-  document.getElementById(saveBtnId).onclick=function(){ const newVal=Number(document.getElementById(inputId).value); if(isNaN(newVal)){ alert('Enter a valid number'); return; } const pw=prompt('Enter[...]
-  document.getElementById(cancelBtnId).onclick=function(){ cleanup(); };
-  function cleanup(){ const inp=document.getElementById(inputId); const s=document.getElementById(saveBtnId); const c=document.getElementById(cancelBtnId); if(inp) inp.remove(); if(s) s.remove(); if(c[...]
+// ── DAY PANELS ────────────────────────────────────────────
+function buildDayPanels(days){
+  currentDays = days;
+  const cont = document.getElementById("day-panels");
+  cont.innerHTML = "";
+  for(let d=0;d<days;d++){
+    const div = document.createElement("div");
+    div.className = "day-content" + (d===0?" active":"");
+    div.id = `day-panel-${d}`;
+    div.innerHTML = `
+      <div class="fg fg-3" style="margin-bottom:14px">
+        <div class="field"><label>Date (Day ${d+1})</label><input type="date" id="day-date-${d}"></div>
+        <div class="field"><label>Start Time</label><input type="time" id="day-start-${d}"></div>
+        <div class="field"><label>End Time</label><input type="time" id="day-end-${d}"></div>
+      </div>
+      <div class="sku-table-wrap">
+        <table class="sku-table">
+          <thead><tr>
+            <th style="width:200px">Product / SKU</th>
+            <th>Units Sold</th>
+            <th>Cases Equivalent</th>
+            <th>Revenue (J$)</th>
+            <th>Notes</th>
+          </tr></thead>
+          <tbody>
+            ${SKUS.map((s,i)=>`
+              <tr>
+                <td>${s.name}</td>
+                <td><input type="number" min="0" value="0" id="sold-${d}-${i}" oninput="calcDaySales(${d})" style="width:80px"></td>
+                <td><span id="sold-cases-${d}-${i}" class="sku-uom">0</span></td>
+                <td><span id="sold-rev-${d}-${i}" class="sku-uom">J$0</span></td>
+                <td><input type="text" placeholder="Note…" id="sold-note-${d}-${i}" style="border:1.5px solid var(--gray2);border-radius:6px;padding:4px 8px;font-size:12px;width:140px"></td>
+              </tr>
+            `).join("")}
+          </tbody>
+          <tfoot>
+            <tr class="sku-total-row">
+              <td><strong>Day ${d+1} Total</strong></td>
+              <td><span class="sku-total" id="day-total-units-${d}">0</span></td>
+              <td>—</td>
+              <td><span class="sku-total" id="day-total-rev-${d}">J$0</span></td>
+              <td>—</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Day ${d+1} — Promoter Observations</label>
+        <textarea placeholder="What happened today? Consumer reactions, store activity, challenges…" id="day-obs-${d}" style="min-height:70px"></textarea>
+      </div>
+    `;
+    cont.appendChild(div);
+  }
+  // update tabs
+  const tabs = document.getElementById("day-tabs");
+  tabs.innerHTML = "";
+  for(let d=0;d<days;d++){
+    const btn = document.createElement("button");
+    btn.className = "day-tab" + (d===0?" active":"");
+    btn.id = "dtab-"+d;
+    btn.textContent = "Day " + (d+1);
+    btn.onclick = (()=>{ const dd=d; return ()=>switchDay(dd); })();
+    tabs.appendChild(btn);
+  }
+  buildSummaryTable();
 }
 
-/* Raw view controls & renderers */
-function setRawView(which){ rawView = which==='credit'? 'credit':'cash'; document.getElementById('seg_cash').classList.toggle('active', rawView==='cash'); document.getElementById('seg_credit').classLi[...]
-function renderRawTable(type){ const tableArea=document.getElementById('rawTableArea'); if(type==='cash'){ const data=windowRawCashData||[]; if(!data.length){ tableArea.innerHTML='<div class="p-4 text[...]
-function filterRawData(type){ if(type==='cash'){ const start=document.getElementById('cash_start')?.value; const end=document.getElementById('cash_end')?.value; const q=(document.getElementById('cash_[...]
-function downloadRaw(type){ if(!(window.google && google.script && google.script.run)){ alert('Mock download'); return; } google.script.run.withSuccessHandler(function(obj){ if(!obj||!obj.data){ alert[...]
+function switchDay(d){
+  document.querySelectorAll(".day-content").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".day-tab").forEach(el=>el.classList.remove("active"));
+  const panel = document.getElementById(`day-panel-${d}`);
+  const tab   = document.getElementById(`dtab-${d}`);
+  if(panel) panel.classList.add("active");
+  if(tab)   tab.classList.add("active");
+}
 
-/* Initial route */
-showHome();
+function calcDaySales(d){
+  let tu=0, tr=0;
+  SKUS.forEach((s,i)=>{
+    const u = parseInt(document.getElementById(`sold-${d}-${i}`).value)||0;
+    const cases = (u/s.upc).toFixed(2);
+    const rev = u * s.price;
+    document.getElementById(`sold-cases-${d}-${i}`).textContent = cases;
+    document.getElementById(`sold-rev-${d}-${i}`).textContent = "J$" + rev.toLocaleString("en-JM",{minimumFractionDigits:2});
+    tu += u; tr += rev;
+  });
+  document.getElementById(`day-total-units-${d}`).textContent = tu.toLocaleString();
+  document.getElementById(`day-total-rev-${d}`).textContent = "J$" + tr.toLocaleString("en-JM",{minimumFractionDigits:2});
+  updateSummaryTable();
+}
 
-// click outside sidebar to close
-document.addEventListener('click', (e) => { if (!sidebarOpen) return; const sb=document.getElementById('sidebar'); const btn=document.getElementById('menuBtn'); if(!sb.contains(e.target) && !btn.conta[...]
+function buildSummaryTable(){
+  const tbody = document.getElementById("summary-tbody");
+  // Update column headers
+  for(let d=0;d<currentDays;d++){
+    const hd = document.getElementById(`sum-d${d+1}h`);
+    if(hd) hd.textContent = `Day ${d+1}`;
+  }
+  tbody.innerHTML = SKUS.map((s,i)=>`
+    <tr>
+      <td>${s.name}</td>
+      ${Array.from({length:currentDays},(_,d)=>`<td id="sum-${d}-${i}">0</td>`).join("")}
+      <td><strong id="sum-total-${i}">0</strong></td>
+      <td id="sum-open-${i}">0</td>
+      <td id="sum-pct-${i}">—</td>
+      <td id="sum-close-${i}">0</td>
+    </tr>
+  `).join("");
+  updateSummaryTable();
+}
+
+function updateSummaryTable(){
+  let gtD=[],gtTotal=0,gtOpen=0;
+  for(let d=0;d<currentDays;d++) gtD.push(0);
+  SKUS.forEach((s,i)=>{
+    let total=0;
+    for(let d=0;d<currentDays;d++){
+      const el = document.getElementById(`sold-${d}-${i}`);
+      const u = el ? (parseInt(el.value)||0) : 0;
+      const cell = document.getElementById(`sum-${d}-${i}`);
+      if(cell) cell.textContent = u;
+      total += u; gtD[d] += u;
+    }
+    const open = parseInt(document.getElementById(`inv-units-${i}`)?.value)||0;
+    const close = Math.max(0, open - total);
+    const pct = open > 0 ? ((total/open)*100).toFixed(1)+"%" : "—";
+    const te = document.getElementById(`sum-total-${i}`);
+    const oe = document.getElementById(`sum-open-${i}`);
+    const pe = document.getElementById(`sum-pct-${i}`);
+    const ce = document.getElementById(`sum-close-${i}`);
+    if(te) te.textContent = total;
+    if(oe) oe.textContent = open;
+    if(pe){ pe.textContent = pct; pe.style.color = open>0&&total>0 ? "var(--green)" : "var(--gray3)"; }
+    if(ce) ce.textContent = close;
+    gtTotal += total; gtOpen += open;
+  });
+  for(let d=0;d<currentDays;d++){
+    const gt = document.getElementById(`gt-d${d+1}`);
+    if(gt) gt.textContent = gtD[d];
+  }
+  document.getElementById("gt-total").textContent = gtTotal;
+  document.getElementById("gt-opening").textContent = gtOpen;
+  document.getElementById("gt-pct").textContent = gtOpen>0 ? ((gtTotal/gtOpen)*100).toFixed(1)+"%" : "—";
+  document.getElementById("gt-closing").textContent = Math.max(0,gtOpen-gtTotal);
+  updateReorderTable();
+}
+
+function updateDayTabs(){
+  const s = document.getElementById("promo-start").value;
+  const e = document.getElementById("promo-end").value;
+  if(s&&e){
+    const start = new Date(s); const end = new Date(e);
+    const diff = Math.max(1, Math.round((end-start)/(1000*60*60*24))+1);
+    document.getElementById("promo-days").value = diff;
+    if(diff !== currentDays) buildDayPanels(diff);
+  }
+}
+
+// ── REORDER TABLE ──────────────────────────────────────────
+function buildReorderTable(){
+  const tbody = document.getElementById("reorder-tbody");
+  tbody.innerHTML = SKUS.map((s,i) => `
+    <tr>
+      <td>${s.name}</td>
+      <td><span id="ro-close-${i}">0</span></td>
+      <td><input type="number" min="0" value="" id="ro-qty-${i}" placeholder="Cases" style="width:80px;border:1.5px solid var(--gray2);border-radius:6px;padding:5px 8px;font-size:13px;text-align:center"></td>
+      <td><select id="ro-urg-${i}" style="border:1.5px solid var(--gray2);border-radius:6px;padding:5px 8px;font-size:12px">
+        <option>🔴 Urgent — reorder now</option>
+        <option>🟡 Soon — within 48 hrs</option>
+        <option>🟢 Standard — next delivery</option>
+        <option>⬜ Not needed</option>
+      </select></td>
+      <td><input type="text" placeholder="Reason for recommendation…" id="ro-note-${i}" style="border:1.5px solid var(--gray2);border-radius:6px;padding:5px 8px;font-size:12px;width:200px"></td>
+    </tr>
+  `).join("");
+}
+
+function updateReorderTable(){
+  SKUS.forEach((_,i)=>{
+    const open = parseInt(document.getElementById(`inv-units-${i}`)?.value)||0;
+    let total=0;
+    for(let d=0;d<currentDays;d++){
+      const el = document.getElementById(`sold-${d}-${i}`);
+      total += el ? (parseInt(el.value)||0) : 0;
+    }
+    const close = Math.max(0,open-total);
+    const el = document.getElementById(`ro-close-${i}`);
+    if(el) el.textContent = close;
+  });
+}
+
+// ── COMPETITOR TABLE ──────────────────────────────────────
+function addCompRow(){
+  const tbody = document.getElementById("comp-tbody");
+  const row = document.createElement("tr");
+  const dayOpts = Array.from({length:currentDays},(_,i)=>`<option>Day ${i+1}</option>`).join("");
+  row.innerHTML = `
+    <td><select name="comp-day" style="width:55px">${dayOpts}</select></td>
+    <td><input type="text" placeholder="Brand name"></td>
+    <td><select><option value="">Type…</option><option>BOGO</option><option>Price Reduction</option><option>Sampling</option><option>Paid Shelf</option><option>Poster Campaign</option><option>Promoter Present</option><option>Price Tag Removal</option><option>Other</option></select></td>
+    <td><input type="text" placeholder="Product/SKU"></td>
+    <td><input type="text" placeholder="e.g. J$250/unit"></td>
+    <td><input type="text" placeholder="Details…"></td>
+    <td><select><option value="">—</option><option>🟢 Low</option><option>🟡 Medium</option><option>🔴 High</option><option>🚨 Critical</option></select></td>
+    <td><button type="button" onclick="removeRow(this)" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:16px">✕</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function removeRow(btn){ btn.closest("tr").remove(); }
+
+// ── HOURS ON SITE ─────────────────────────────────────────
+function updateHoursOnSite(){
+  if(!checkInTime) return;
+  const now = new Date();
+  const diff = now - checkInTime;
+  const h = Math.floor(diff/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  document.getElementById("hours-on-site").value = `${h}h ${m}m`;
+}
+
+// ── FORM SUBMISSION ────────────────────────────────────────
+function checkOutAndSubmit(){
+  const name = document.getElementById("promoter-name").value.trim();
+  const store = document.getElementById("customer-name").value.trim();
+  if(!name){ showToast("⚠️ Please enter promoter name","var(--orange)"); return; }
+  if(!store){ showToast("⚠️ Please enter customer/store name","var(--orange)"); return; }
+
+  const checkOut = new Date();
+  document.getElementById("checkout-time").value = formatDateTime(checkOut);
+  updateHoursOnSite();
+
+  const data = collectFormData(checkOut);
+  submissions.push(data);
+  localStorage.setItem("ab_submissions", JSON.stringify(submissions));
+  updateDashboard();
+  updateNavBadge();
+  showToast("✅ Report submitted successfully! Form ID: " + formUID);
+  document.getElementById("top-submissions").textContent = submissions.length + " Submissions";
+  setTimeout(()=>{ if(confirm("Form submitted! Start a new form?")) clearForm(); }, 1200);
+}
+
+function collectFormData(checkOut){
+  const daysSales = [];
+  for(let d=0;d<currentDays;d++){
+    const sold = SKUS.map((_,i)=> parseInt(document.getElementById(`sold-${d}-${i}`)?.value)||0 );
+    daysSales.push(sold);
+  }
+  const opening = SKUS.map((_,i)=> parseInt(document.getElementById(`inv-units-${i}`)?.value)||0 );
+  const totalSold = SKUS.map((_,i)=> daysSales.reduce((s,d)=>s+d[i],0));
+
+  const compRows = [];
+  document.querySelectorAll("#comp-tbody tr").forEach(tr=>{
+    const cells = tr.querySelectorAll("input,select");
+    if(cells.length>=6){
+      compRows.push({
+        day: cells[0].value, brand: cells[1].value, type: cells[2].value,
+        product: cells[3].value, price: cells[4].value, notes: cells[5].value,
+        threat: cells[6]?.value || ""
+      });
+    }
+  });
+
+  return {
+    uid: formUID, submittedAt: checkOut.toISOString(), checkIn: checkInTime.toISOString(),
+    checkOut: checkOut.toISOString(),
+    promoterName: document.getElementById("promoter-name").value,
+    promoterID: document.getElementById("promoter-id").value,
+    supervisor: document.getElementById("supervisor-name").value,
+    customerName: document.getElementById("customer-name").value,
+    customerAddress: document.getElementById("store-address").value,
+    parish: document.getElementById("store-parish").value,
+    storeType: document.getElementById("store-type").value,
+    promoStart: document.getElementById("promo-start").value,
+    promoEnd: document.getElementById("promo-end").value,
+    promoDays: parseInt(document.getElementById("promo-days").value)||currentDays,
+    activationType: document.getElementById("activation-type").value,
+    gps: document.getElementById("gps-location").value,
+    status: document.getElementById("promo-status").value,
+    opening, daysSales, totalSold,
+    totalUnits: totalSold.reduce((a,b)=>a+b,0),
+    openingTotal: opening.reduce((a,b)=>a+b,0),
+    sellThruPct: opening.reduce((a,b)=>a+b,0) > 0 ? (totalSold.reduce((a,b)=>a+b,0)/opening.reduce((a,b)=>a+b,0)*100).toFixed(1) : "0",
+    competitionLog: compRows,
+    shelfPosition: document.getElementById("shelf-position").value,
+    popMaterials: document.getElementById("pop-materials").value,
+    priceTags: document.getElementById("price-tags").value,
+    consumerSentiment: document.getElementById("consumer-sentiment").value,
+    mostRequested: document.getElementById("most-requested").value,
+    findings: document.getElementById("detailed-findings").value,
+    challenges: document.getElementById("key-challenges").value,
+    keyWin: document.getElementById("key-win").value,
+    immediateIssues: document.getElementById("immediate-issues").value,
+    recommendation: document.getElementById("promoter-recommendation").value,
+    promoRating: document.getElementById("promo-rating").value,
+    finalNotes: document.getElementById("final-notes").value,
+  };
+}
+
+function saveDraft(){
+  const data = collectFormData(new Date());
+  localStorage.setItem("ab_draft", JSON.stringify(data));
+  showToast("💾 Draft saved");
+}
+
+function clearForm(){
+  formUID = generateUID();
+  checkInTime = new Date();
+  currentDays = 2;
+  document.querySelectorAll("input:not([readonly]),select,textarea").forEach(el=>{
+    if(el.type==="number") el.value="0";
+    else if(el.type!=="submit"&&el.tagName==="INPUT") el.value="";
+    else if(el.tagName==="SELECT") el.selectedIndex=0;
+    else if(el.tagName==="TEXTAREA") el.value="";
+  });
+  setTimestamps();
+  buildInventoryTable();
+  buildDayPanels(2);
+  buildSummaryTable();
+  buildReorderTable();
+  showToast("🔄 New form started");
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────
+function updateDashboard(){
+  if(!submissions.length){ return; }
+  const totalUnits = submissions.reduce((s,r)=>s+r.totalUnits,0);
+  const stores = new Set(submissions.map(r=>r.customerName)).size;
+  const issues = submissions.filter(r=>r.immediateIssues&&r.immediateIssues.trim()).length;
+  const promos = new Set(submissions.map(r=>r.promoterName)).size;
+
+  document.getElementById("kpi-submissions").textContent = submissions.length;
+  document.getElementById("kpi-promoters").textContent = promos;
+  document.getElementById("kpi-units").textContent = totalUnits.toLocaleString();
+  document.getElementById("kpi-stores").textContent = stores;
+  document.getElementById("kpi-issues").textContent = issues;
+  document.getElementById("kpi-sub-delta").textContent = `+${submissions.length} total`;
+  document.getElementById("kpi-units-delta").textContent = `${totalUnits.toLocaleString()} units across ${submissions.length} reports`;
+  document.getElementById("top-submissions").textContent = submissions.length + " Submission" + (submissions.length!==1?"s":"");
+
+  buildSKUBarChart();
+  buildDonut();
+  buildDashTable();
+  buildAllReportsTable();
+  buildLeaderboard();
+  buildAnalyticsCards();
+}
+
+function buildSKUBarChart(){
+  const totals = SKUS.map((_,i)=> submissions.reduce((s,r)=>s+(r.totalSold[i]||0),0));
+  const maxVal = Math.max(...totals,1);
+  const colors = ["#2563C7","#E8760A","#6D28D9","#0A7A45","#009EB4","#C0241E","#92400E","#0F766E"];
+  const cont = document.getElementById("sku-bar-chart");
+  cont.innerHTML = SKUS.map((s,i)=>`
+    <div class="bar-group">
+      <div class="bar-val">${totals[i]}</div>
+      <div class="bar" style="height:${Math.round((totals[i]/maxVal)*140)}px;background:${colors[i%colors.length]}" data-val="${totals[i]} units"></div>
+      <div class="bar-lbl">${s.name.split(" ").slice(0,2).join(" ")}</div>
+    </div>
+  `).join("");
+}
+
+function buildDonut(){
+  const totals = SKUS.map((_,i)=> submissions.reduce((s,r)=>s+(r.totalSold[i]||0),0));
+  const opening = SKUS.map((_,i)=> submissions.reduce((s,r)=>s+(r.opening[i]||0),0));
+  const pcts = SKUS.map((_,i)=> opening[i]>0 ? Math.round(totals[i]/opening[i]*100) : 0);
+  const avgPct = pcts.reduce((a,b)=>a+b,0)/pcts.length;
+  const colors=["#2563C7","#E8760A","#6D28D9","#0A7A45","#009EB4","#C0241E","#92400E","#0F766E"];
+  const R=45, C=2*Math.PI*R;
+  let offset=0;
+  const total=totals.reduce((a,b)=>a+b,0)||1;
+  let segs="";
+  totals.forEach((v,i)=>{
+    const l=(v/total)*C;
+    segs+=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="${colors[i]}" stroke-width="18" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-offset+C*0.25}" style="transition:stroke-dasharray .5s"/>`;
+    offset+=l;
+  });
+  document.getElementById("donut-svg").innerHTML = segs +
+    `<text x="60" y="56" text-anchor="middle" font-size="12" font-weight="700" fill="#0B1E45">${Math.round(avgPct)}%</text>
+     <text x="60" y="69" text-anchor="middle" font-size="8" fill="#9AA3BB">avg sell-thru</text>`;
+  document.getElementById("donut-legend").innerHTML = SKUS.map((s,i)=>`
+    <div class="dl-item">
+      <div class="dl-dot" style="background:${colors[i]}"></div>
+      <div class="dl-name">${s.name.split("(")[0].trim()}</div>
+      <div class="dl-val">${pcts[i]}%</div>
+    </div>
+  `).join("");
+}
+
+function buildDashTable(){
+  const tbody = document.getElementById("dash-tbody");
+  const recent = submissions.slice(-10).reverse();
+  if(!recent.length){ tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray3)">No submissions yet.</td></tr>'; return; }
+  tbody.innerHTML = recent.map(r=>`
+    <tr>
+      <td><code style="font-size:11px;color:var(--gray3)">${r.uid}</code></td>
+      <td><strong>${r.promoterName||"—"}</strong></td>
+      <td>${r.customerName||"—"}</td>
+      <td>${r.parish||"—"}</td>
+      <td>${r.promoStart||"—"}</td>
+      <td><strong>${r.totalUnits}</strong></td>
+      <td>
+        <div class="progress-bar" style="width:80px;display:inline-block;vertical-align:middle;margin-right:6px">
+          <div class="pb-fill" style="width:${Math.min(100,r.sellThruPct)}%;background:var(--green)"></div>
+        </div>${r.sellThruPct}%
+      </td>
+      <td><span class="status-badge ${r.status==="Completed"?"sb-green":r.status==="Cancelled"?"sb-red":"sb-orange"}">${r.status}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="viewReport('${r.uid}')">View</button></td>
+    </tr>
+  `).join("");
+}
+
+function buildAllReportsTable(filter={}){
+  let filtered = submissions.filter(r=>{
+    if(filter.search && !JSON.stringify(r).toLowerCase().includes(filter.search.toLowerCase())) return false;
+    if(filter.parish && r.parish !== filter.parish) return false;
+    if(filter.status && r.status !== filter.status) return false;
+    return true;
+  });
+  document.getElementById("report-count").textContent = filtered.length;
+  const tbody = document.getElementById("all-reports-tbody");
+  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--gray3)">No reports found.</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(r=>`
+    <tr>
+      <td><code style="font-size:11px;color:var(--gray3)">${r.uid}</code></td>
+      <td>${r.promoterName||"—"}</td>
+      <td>${r.customerName||"—"}</td>
+      <td>${r.parish||"—"}</td>
+      <td>${r.promoStart||"—"}</td>
+      <td>${r.promoDays||"—"}</td>
+      <td><strong>${r.totalUnits}</strong></td>
+      <td>${r.sellThruPct}%</td>
+      <td style="font-size:11px">${new Date(r.submittedAt).toLocaleString("en-JM")}</td>
+      <td><span class="status-badge ${r.status==="Completed"?"sb-green":r.status==="Cancelled"?"sb-red":"sb-orange"}">${r.status}</span></td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-outline btn-sm" onclick="viewReport('${r.uid}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="deleteReport('${r.uid}')">🗑</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function buildLeaderboard(){
+  const leaderMap = {};
+  submissions.forEach(r=>{
+    if(!r.promoterName) return;
+    if(!leaderMap[r.promoterName]) leaderMap[r.promoterName]={name:r.promoterName,units:0,reports:0,stores:new Set()};
+    leaderMap[r.promoterName].units += r.totalUnits;
+    leaderMap[r.promoterName].reports++;
+    leaderMap[r.promoterName].stores.add(r.customerName);
+  });
+  const ranked = Object.values(leaderMap).sort((a,b)=>b.units-a.units);
+  const cont = document.getElementById("leaderboard-wrap");
+  if(!ranked.length){ cont.innerHTML='<div style="padding:24px;text-align:center;color:var(--gray3);font-size:13px">No data yet.</div>'; return; }
+  cont.innerHTML = ranked.map((p,i)=>`
+    <div class="lb-item">
+      <div class="lb-rank ${i===0?"r1":i===1?"r2":i===2?"r3":""}">${i===0?"🥇":i===1?"🥈":i===2?"🥉":"#"+(i+1)}</div>
+      <div class="lb-avatar">${p.name.split(" ").map(n=>n[0]).join("").substring(0,2)}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name}</div>
+        <div class="lb-sub">${p.reports} report${p.reports!==1?"s":""} · ${p.stores.size} store${p.stores.size!==1?"s":""}</div>
+      </div>
+      <div>
+        <div class="lb-score">${p.units.toLocaleString()}</div>
+        <div style="font-size:10px;color:var(--gray3)">units sold</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function buildAnalyticsCards(){
+  // SKU performance
+  const skuTotals = SKUS.map((_,i)=>submissions.reduce((s,r)=>s+(r.totalSold[i]||0),0));
+  const maxSku = Math.max(...skuTotals,1);
+  document.getElementById("sku-perf-rows").innerHTML = SKUS.map((s,i)=>`
+    <div class="metric-row">
+      <div>
+        <div class="mr-label">${s.name}</div>
+        <div class="mr-bar"><div class="mrb-fill" style="width:${Math.round(skuTotals[i]/maxSku*100)}%"></div></div>
+      </div>
+      <div class="mr-val">${skuTotals[i].toLocaleString()} u</div>
+    </div>
+  `).join("");
+
+  // Sell-through
+  const skuOpen = SKUS.map((_,i)=>submissions.reduce((s,r)=>s+(r.opening[i]||0),0));
+  document.getElementById("sellthru-rows").innerHTML = SKUS.map((s,i)=>{
+    const pct = skuOpen[i]>0 ? Math.round(skuTotals[i]/skuOpen[i]*100) : 0;
+    return `
+    <div class="metric-row">
+      <div>
+        <div class="mr-label">${s.name}</div>
+        <div class="mr-bar"><div class="mrb-fill" style="width:${pct}%;background:${pct>=80?"var(--green)":pct>=50?"var(--orange)":"var(--red)"}"></div></div>
+      </div>
+      <div class="mr-val" style="color:${pct>=80?"var(--green)":pct>=50?"var(--orange)":"var(--red)"}">${pct}%</div>
+    </div>`;
+  }).join("");
+
+  // Competition intel
+  const allComp = submissions.flatMap(r=>r.competitionLog||[]);
+  const byBrand = {};
+  allComp.forEach(c=>{ if(c.brand){ byBrand[c.brand]=(byBrand[c.brand]||0)+1; }});
+  const compSorted = Object.entries(byBrand).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  document.getElementById("comp-intel-rows").innerHTML = compSorted.length
+    ? compSorted.map(([b,n])=>`<div class="metric-row"><div class="mr-label">${b}</div><div class="mr-val">${n} entries</div></div>`).join("")
+    : '<div style="color:var(--gray3);font-size:13px">No competitor data logged yet</div>';
+
+  // Parish coverage
+  const parishMap = {};
+  submissions.forEach(r=>{ if(r.parish){ parishMap[r.parish]=(parishMap[r.parish]||{count:0,units:0}); parishMap[r.parish].count++; parishMap[r.parish].units+=r.totalUnits; }});
+  const parishSorted = Object.entries(parishMap).sort((a,b)=>b[1].units-a[1].units);
+  document.getElementById("parish-rows").innerHTML = parishSorted.length
+    ? parishSorted.map(([p,v])=>`<div class="metric-row"><div class="mr-label">${p}</div><div class="mr-val">${v.units.toLocaleString()} u</div></div>`).join("")
+    : '<div style="color:var(--gray3);font-size:13px">No parish data yet</div>';
+}
+
+function buildSettingsSKUs(){
+  document.getElementById("settings-sku-list").innerHTML = SKUS.map(s=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gray0);border-radius:6px;font-size:13px">
+      <span style="flex:1;font-weight:600">${s.name}</span>
+      <span style="color:var(--gray3)">${s.uom}</span>
+      <span style="font-family:var(--font-mono);color:var(--gray4)">${s.upc} units/case</span>
+      <span style="font-family:var(--font-mono);color:var(--navy)">J$${s.price.toFixed(2)}/unit</span>
+    </div>
+  `).join("");
+}
+
+// ── REPORT VIEWER ──────────────────────────────────────────
+function viewReport(uid){
+  const r = submissions.find(x=>x.uid===uid);
+  if(!r) return;
+  document.getElementById("modal-title").textContent = "Report: " + r.uid;
+  document.getElementById("modal-body").innerHTML = `
+    <div style="display:grid;gap:12px;font-size:13px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><strong>Promoter:</strong> ${r.promoterName||"—"}</div>
+        <div><strong>Store:</strong> ${r.customerName||"—"}</div>
+        <div><strong>Parish:</strong> ${r.parish||"—"}</div>
+        <div><strong>Dates:</strong> ${r.promoStart||"—"} to ${r.promoEnd||"—"}</div>
+        <div><strong>Status:</strong> ${r.status||"—"}</div>
+        <div><strong>Submitted:</strong> ${new Date(r.submittedAt).toLocaleString("en-JM")}</div>
+        <div><strong>Total Units Sold:</strong> <span style="color:var(--green);font-weight:700">${r.totalUnits}</span></div>
+        <div><strong>Sell-Through:</strong> <span style="color:var(--green);font-weight:700">${r.sellThruPct}%</span></div>
+      </div>
+      <hr>
+      <div><strong>SKU Breakdown:</strong><br>
+        ${SKUS.map((s,i)=>`${s.name}: <strong>${r.totalSold[i]||0}</strong> units sold`).join(" | ")}
+      </div>
+      ${r.findings ? `<div><strong>Findings:</strong><br>${r.findings}</div>`:""}
+      ${r.recommendation ? `<div><strong>Recommendation:</strong><br>${r.recommendation}</div>`:""}
+      ${r.immediateIssues ? `<div style="background:var(--red-lt);padding:10px;border-radius:6px;border-left:3px solid var(--red)"><strong style="color:var(--red)">⚠️ Issues Flagged:</strong><br>${r.immediateIssues}</div>`:""}
+      ${r.competitionLog&&r.competitionLog.length ? `
+        <div><strong>Competition Log (${r.competitionLog.length} entries):</strong><br>
+          ${r.competitionLog.map(c=>`<div style="padding:4px 0;border-bottom:1px solid var(--gray1)">${c.day||""} · <strong>${c.brand||"—"}</strong> · ${c.type||""} · ${c.notes||""}</div>`).join("")}
+        </div>`:""
+      }
+    </div>
+  `;
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function closeModal(){ document.getElementById("modal-overlay").classList.remove("open"); }
+document.getElementById("modal-overlay").addEventListener("click",e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+function deleteReport(uid){
+  if(!confirm("Delete this report? This cannot be undone.")) return;
+  submissions = submissions.filter(r=>r.uid!==uid);
+  localStorage.setItem("ab_submissions",JSON.stringify(submissions));
+  updateDashboard();
+  showToast("🗑 Report deleted","var(--red)");
+}
+
+// ── FILTERS ────────────────────────────────────────────────
+function filterReports(){
+  buildAllReportsTable({
+    search: document.getElementById("filter-search").value,
+    parish: document.getElementById("filter-parish").value,
+    status: document.getElementById("filter-status").value,
+  });
+}
+function clearFilters(){
+  ["filter-search","filter-parish","filter-status","filter-date-from","filter-date-to"].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value="";
+  });
+  filterReports();
+}
+
+// ── EXPORTS ────────────────────────────────────────────────
+function exportJSON(){
+  const data = collectFormData(new Date());
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `promo-${formUID}.json`;
+  a.click();
+}
+
+function exportAllCSV(){
+  if(!submissions.length){ showToast("No data to export","var(--orange)"); return; }
+  const headers = ["FormID","Promoter","Store","Parish","Start","End","Days","TotalUnits","SellThru","Status","Submitted","Findings","Issues"];
+  const rows = submissions.map(r=>[
+    r.uid, r.promoterName, r.customerName, r.parish,
+    r.promoStart, r.promoEnd, r.promoDays, r.totalUnits, r.sellThruPct+"%",
+    r.status, new Date(r.submittedAt).toLocaleString("en-JM"),
+    (r.findings||"").replace(/,/g," "), (r.immediateIssues||"").replace(/,/g," ")
+  ]);
+  const csv = [headers, ...rows].map(r=>r.map(v=>`"${v}"`).join(",")).join("\n");
+  const blob = new Blob([csv],{type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `alcobina-pings-reports-${Date.now()}.csv`;
+  a.click();
+}
+
+function clearAllData(){
+  submissions = [];
+  localStorage.removeItem("ab_submissions");
+  updateDashboard();
+  showToast("🗑 All data cleared","var(--red)");
+}
+
+// ── NAV ────────────────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  const navMap = {form:0,preview:1,dashboard:2,analytics:3,leaderboard:4,reports:5,settings:6};
+  const items = document.querySelectorAll(".nav-item");
+  if(navMap[id]!==undefined) items[navMap[id]]?.classList.add("active");
+  if(id==="reports") buildAllReportsTable();
+}
+
+function updateNavBadge(){ document.getElementById("nb-form").textContent = submissions.length; }
+
+// ── TOAST ──────────────────────────────────────────────────
+function showToast(msg, color="var(--green)"){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.background = color; t.style.display = "block";
+  setTimeout(()=>{ t.style.display="none"; }, 3500);
+}
+
+// ── BOOT ──────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
